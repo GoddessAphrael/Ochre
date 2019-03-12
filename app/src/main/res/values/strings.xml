@@ -1,8 +1,11 @@
 <resources>
     <string name="app_name">YellowAnn</string>
     <string name="app_logo_full">Ochre Full</string>
+    <string name="app_logo">Ochre</string>
     <string name="email">Email</string>
     <string name="password">Password</string>
+    <string name="confirm_password">Confirm Password</string>
     <string name="register">Register</string>
     <string name="login">Login</string>
+    <string name="cancel">Cancel</string>
 </resources>
