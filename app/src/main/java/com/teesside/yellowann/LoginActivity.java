@@ -52,7 +52,7 @@ public class LoginActivity extends AppCompatActivity
             @Override
             public void onClick(View v)
             {
-                UserLogin();
+                userLogin();
             }
         });
     }
@@ -64,11 +64,11 @@ public class LoginActivity extends AppCompatActivity
         FirebaseUser currentUser = mAuth.getCurrentUser();
         if (currentUser != null)
         {
-            SendToMain();
+            sendToMain();
         }
     }
 
-    private void UserLogin()
+    private void userLogin()
     {
         String email = UserEmail.getText().toString();
         String password = UserPassword.getText().toString();
@@ -91,7 +91,7 @@ public class LoginActivity extends AppCompatActivity
                     {
                         if (task.isSuccessful())
                         {
-                            SendToMain();
+                            sendToMain();
                         }
                         else
                         {
@@ -102,7 +102,7 @@ public class LoginActivity extends AppCompatActivity
         }
     }
 
-    private void SendToMain()
+    private void sendToMain()
     {
         Intent mainIntent = new Intent(LoginActivity.this, MainActivity.class);
         mainIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
