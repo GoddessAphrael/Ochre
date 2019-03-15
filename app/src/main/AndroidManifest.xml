@@ -20,6 +20,11 @@
                 <action android:name="android.intent.action.SEND" />
             </intent-filter>
         </activity>
+        <activity android:name=".MainActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.BROWSABLE" />
+            </intent-filter>
+        </activity>
     </application>
 
 </manifest>
