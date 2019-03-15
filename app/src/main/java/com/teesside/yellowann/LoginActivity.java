@@ -91,10 +91,10 @@ public class LoginActivity extends AppCompatActivity
         super.onStart();
 
         FirebaseUser currentUser = mAuth.getCurrentUser();
-        if (currentUser != null)
-        {
-            sendToMain();
-        }
+        //if (currentUser != null)
+        //{
+        //    sendToMain();
+        //}
     }
 
     private void userRegister(String email, String password)
@@ -253,6 +253,7 @@ public class LoginActivity extends AppCompatActivity
     private void sendToPasswordReset()
     {
         Intent resetIntent = new Intent(LoginActivity.this, ResetPasswordActivity.class);
+        resetIntent.putExtra("email", UserEmail.getText().toString());
         startActivity(resetIntent);
     }
 

@@ -3,6 +3,7 @@ package com.teesside.yellowann;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.SystemClock;
 import android.text.TextUtils;
 import android.util.Log;
@@ -29,6 +30,7 @@ public class ResetPasswordActivity extends AppCompatActivity {
         Cancel = findViewById(R.id.CancelButton);
         ResetPassword = findViewById(R.id.ResetButton);
         UserEmail = findViewById(R.id.EmailRecovery);
+        UserEmail.setText(getIntent().getStringExtra("email"));
 
         Cancel.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -65,9 +67,6 @@ public class ResetPasswordActivity extends AppCompatActivity {
                                         Log.d(TAG, "sendPasswordResetEmail:success");
                                         Toast.makeText(ResetPasswordActivity.this,
                                                 "Please check Email for Password Reset", Toast.LENGTH_SHORT).show();
-
-                                        SystemClock.sleep(2000);
-                                        finish();
                                     }
                                     else
                                     {
