@@ -11,8 +11,13 @@
         android:theme="@style/AppTheme">
         <activity android:name=".LoginActivity">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
+                <action android:name="android.intent.action.LOGIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity android:name=".ResetPasswordActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.RESETPASSWORD" />
             </intent-filter>
         </activity>
     </application>
