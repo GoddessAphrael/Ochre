@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -26,6 +27,7 @@ public class LoginActivity extends AppCompatActivity
     private Button Register, Login;
     private EditText UserEmail, UserPassword;
     private FirebaseAuth mAuth;
+    private TextView PasswordReset;
 
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -38,6 +40,7 @@ public class LoginActivity extends AppCompatActivity
         UserPassword = findViewById(R.id.PasswordEntry);
         Login = findViewById(R.id.LoginButton);
         Register = findViewById(R.id.RegisterButton);
+        PasswordReset = findViewById((R.id.PasswordRecovery));
 
         Register.setOnClickListener(new View.OnClickListener()
         {
@@ -70,6 +73,15 @@ public class LoginActivity extends AppCompatActivity
                 String password = UserPassword.getText().toString();
 
                 userLogin(email, password);
+            }
+        });
+
+        PasswordReset.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                sendToPasswordReset();
             }
         });
     }
@@ -115,8 +127,15 @@ public class LoginActivity extends AppCompatActivity
                                             else
                                             {
                                                 Log.w(TAG, "sendEmailVerification:failure", task.getException());
-                                                Toast.makeText(LoginActivity.this,"Unable to Verify: "
-                                                        + task.getException().getMessage(),Toast.LENGTH_SHORT).show();
+                                                try
+                                                {
+                                                    Toast.makeText(LoginActivity.this,"Unable to Verify: "
+                                                            + task.getException().getMessage(),Toast.LENGTH_SHORT).show();
+                                                }
+                                                catch (NullPointerException e)
+                                                {
+
+                                                }
                                             }
                                         }
                                     });
@@ -124,8 +143,15 @@ public class LoginActivity extends AppCompatActivity
                         else
                         {
                             Log.w(TAG, "createUserWithEmailAndPassword:failure", task.getException());
-                            Toast.makeText(LoginActivity.this,"Unable to Register: "
-                                    + task.getException().getMessage(),Toast.LENGTH_SHORT).show();
+                            try
+                            {
+                                Toast.makeText(LoginActivity.this, "Unable to Register: "
+                                        + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                            }
+                            catch (NullPointerException e)
+                            {
+
+                            }
                         }
                     }
                 });
@@ -209,12 +235,25 @@ public class LoginActivity extends AppCompatActivity
                             else
                             {
                                 Log.w(TAG, "signInWithEmailAndPassword:failure", task.getException());
+                                try
+                                {
                                 Toast.makeText(LoginActivity.this,"Unable to Login: "
                                         + task.getException().getMessage(),Toast.LENGTH_SHORT).show();
+                                }
+                                catch (NullPointerException e)
+                                {
+
+                                }
                             }
                         }
                     });
         }
+    }
+
+    private void sendToPasswordReset()
+    {
+        Intent resetIntent = new Intent(LoginActivity.this, ResetPasswordActivity.class);
+        startActivity(resetIntent);
     }
 
     private void sendToMain()
