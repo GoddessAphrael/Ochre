@@ -2,8 +2,25 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android" >
     <group android:checkableBehavior="single">
         <item
-            android:id="@+id/example"
+            android:id="@+id/images"
             android:icon="@drawable/ochre_part"
-            android:title="@string/app_logo" />
+            android:title="@string/images" />
+
+        <item
+            android:id="@+id/text"
+            android:icon="@drawable/ochre_part"
+            android:title="@string/text" />
+
+        <item
+            android:id="@+id/analysis"
+            android:icon="@drawable/ochre_part"
+            android:title="@string/analysis" />
+
+        <item
+            android:id="@+id/dummy_footer"
+            android:checkable="false"
+            android:enabled="false"
+            android:orderInCategory="200"
+            android:title="" />
     </group>
 </menu>

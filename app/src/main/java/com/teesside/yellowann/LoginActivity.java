@@ -91,10 +91,10 @@ public class LoginActivity extends AppCompatActivity
         super.onStart();
 
         FirebaseUser currentUser = mAuth.getCurrentUser();
-        //if (currentUser != null)
-        //{
-        //    sendToMain();
-        //}
+        if (currentUser != null)
+        {
+            sendToMain();
+        }
     }
 
     private void userRegister(String email, String password)

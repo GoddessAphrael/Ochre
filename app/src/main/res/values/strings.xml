@@ -9,4 +9,9 @@
     <string name="login">Login</string>
     <string name="cancel">Cancel</string>
     <string name="reset">Reset Password</string>
+    <string name="images">Images</string>
+    <string name="text">Texts</string>
+    <string name="analysis">Analyses</string>
+    <string name="account">Account</string>
+    <string name="logout">Logout</string>
 </resources>
