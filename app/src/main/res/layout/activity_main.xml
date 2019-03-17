@@ -9,10 +9,22 @@
     android:fitsSystemWindows="true"
     tools:context=".MainActivity">
 
-    <FrameLayout
-        android:id="@+id/content_frame"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <include
+            layout="@layout/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <FrameLayout
+            android:id="@+id/content_frame"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </LinearLayout>
 
     <com.google.android.material.navigation.NavigationView
         android:id="@+id/navigation_view"
@@ -36,7 +48,8 @@
                 android:layout_height="48dp"
                 android:clickable="true"
                 android:gravity="center"
-                android:text="@string/account" />
+                android:text="@string/account"
+                android:textColor="@color/common_google_signin_btn_text_dark_focused" />
 
             <TextView
                 android:id="@+id/logout"
@@ -44,7 +57,8 @@
                 android:layout_height="48dp"
                 android:clickable="true"
                 android:gravity="center"
-                android:text="@string/logout" />
+                android:text="@string/logout"
+                android:textColor="@color/common_google_signin_btn_text_dark_focused" />
         </LinearLayout>
 
     </com.google.android.material.navigation.NavigationView>

@@ -11,14 +11,21 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
+import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 
 public class MainActivity extends AppCompatActivity
 {
     private DrawerLayout Drawer;
     private NavigationView NavView;
+    private Toolbar toolbar;
+    private ActionBarDrawerToggle drawerToggle;
     private TextView UserAccount, UserLogout;
     private FirebaseAuth mAuth;
 
@@ -29,17 +36,25 @@ public class MainActivity extends AppCompatActivity
 
         Drawer = findViewById(R.id.drawer_layout);
         NavView = findViewById(R.id.navigation_view);
+        toolbar = findViewById(R.id.toolbar);
         UserAccount = findViewById(R.id.account);
         UserLogout = findViewById(R.id.logout);
 
         mAuth = FirebaseAuth.getInstance();
+
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setTitle(R.string.home);
+        drawerToggle = setupDrawerToggle();
+        drawerToggle.syncState();
+
+        Drawer.addDrawerListener(drawerToggle);
 
         NavView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener()
         {
             @Override
             public boolean onNavigationItemSelected(MenuItem menuItem)
             {
-                menuItem.setChecked(true);
+                //selectDrawerItem(menuItem);
                 Drawer.closeDrawers();
 
                 return true;
@@ -83,4 +98,55 @@ public class MainActivity extends AppCompatActivity
             }
         });
     }
+
+    private ActionBarDrawerToggle setupDrawerToggle()
+    {
+        return new ActionBarDrawerToggle(MainActivity.this, Drawer, toolbar, R.string.drawer_open, R.string.drawer_close);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item)
+    {
+        if (drawerToggle.onOptionsItemSelected(item))
+        {
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+//    public void selectDrawerItem(MenuItem menuItem)
+//    {
+//        Fragment fragment = null;
+//        Class fragmentClass;
+//        switch(menuItem.getItemId())
+//        {
+//            case R.id.nav_first_fragment:
+//                fragmentClass = FirstFragment.class;
+//                break;
+//            case R.id.nav_second_fragment:
+//                fragmentClass = SecondFragment.class;
+//                break;
+//            case R.id.nav_third_fragment:
+//                fragmentClass = ThirdFragment.class;
+//                break;
+//            default:
+//                fragmentClass = FirstFragment.class;
+//        }
+//
+//        try
+//        {
+//            fragment = (Fragment) fragmentClass.newInstance();
+//        }
+//        catch (Exception e)
+//        {
+//
+//        }
+//
+//        FragmentManager fragmentManager = getSupportFragmentManager();
+//        fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
+//
+//        menuItem.setChecked(true);
+//        setTitle(menuItem.getTitle());
+//        Drawer.closeDrawers();
+//    }
 }
