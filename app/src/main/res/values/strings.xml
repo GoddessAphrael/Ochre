@@ -1,3 +1,23 @@
 <resources>
-    <string name="app_name">YellowAnn</string>
+    <string name="app_name">Ochre</string>
+    <string name="app_nick">YellowAnn</string>
+    <string name="app_logo_full">Ochre Full</string>
+    <string name="app_logo">Ochre</string>
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="forgotten_password">Forgotten Password</string>
+    <string name="register">Register</string>
+    <string name="login">Login</string>
+    <string name="cancel">Cancel</string>
+    <string name="reset">Reset Password</string>
+    <string name="images">Images</string>
+    <string name="text">Texts</string>
+    <string name="analysis">Analyses</string>
+    <string name="account">Account</string>
+    <string name="logout">Logout</string>
+    <string name="home">Home</string>
+    <string name="favourites">Favourites</string>
+    <string name="navigation">Navigation</string>
+    <string name="drawer_open">Open navigation drawer</string>
+    <string name="drawer_close">Close navigation drawer</string>
 </resources>

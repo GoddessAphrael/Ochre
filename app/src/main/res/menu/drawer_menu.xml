@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+    <group android:checkableBehavior="single" >
+        <item
+            android:id="@+id/home"
+            android:checked="true"
+            android:enabled="true"
+            android:icon="@drawable/home"
+            android:title="@string/home"
+            android:visible="true" />
+
+        <item
+            android:id="@+id/favourites"
+            android:enabled="true"
+            android:icon="@android:drawable/star_off"
+            android:title="@string/favourites"
+            android:visible="true" />
+
+        <item
+            android:id="@+id/dummy_footer1"
+            android:checkable="false"
+            android:enabled="false"
+            android:title="" />
+    </group>
+    <item android:title="@string/navigation" />
+    <group android:checkableBehavior="single" >
+        <item
+            android:id="@+id/image"
+            android:enabled="true"
+            android:icon="@android:drawable/ic_menu_gallery"
+            android:title="@string/images"
+            android:visible="true" />
+
+        <item
+            android:id="@+id/text"
+            android:enabled="true"
+            android:icon="@drawable/text"
+            android:title="@string/text"
+            android:visible="true" />
+
+        <item
+            android:id="@+id/analysis"
+            android:enabled="true"
+            android:icon="@android:drawable/ic_menu_view"
+            android:title="@string/analysis"
+            android:visible="true" />
+
+        <item
+            android:id="@+id/dummy_footer2"
+            android:checkable="false"
+            android:enabled="false"
+            android:orderInCategory="200"
+            android:title="" />
+    </group>
+</menu>
