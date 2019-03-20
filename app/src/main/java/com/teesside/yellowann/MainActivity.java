@@ -6,7 +6,8 @@ import android.os.Bundle;
 
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import android.view.MenuItem;
 import android.view.View;
@@ -27,6 +28,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private ActionBarDrawerToggle drawerToggle;
     private TextView UserAccount, UserLogout;
     private FirebaseAuth mAuth;
+    private FirebaseStorage mStorage;
+    private StorageReference mStorageRef;
 
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -40,6 +43,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         UserLogout = findViewById(R.id.logout);
 
         mAuth = FirebaseAuth.getInstance();
+        mStorage = FirebaseStorage.getInstance();
+        mStorageRef = mStorage.getReference();
 
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle(R.string.home);
