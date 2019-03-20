@@ -81,7 +81,7 @@ public class LoginActivity extends AppCompatActivity
             @Override
             public void onClick(View v)
             {
-                sendToPasswordReset();
+                sendToPasswordReset(v);
             }
         });
     }
@@ -250,11 +250,12 @@ public class LoginActivity extends AppCompatActivity
         }
     }
 
-    private void sendToPasswordReset()
+    private void sendToPasswordReset(View v)
     {
-        Intent resetIntent = new Intent(LoginActivity.this, ResetPasswordActivity.class);
-        resetIntent.putExtra("email", UserEmail.getText().toString());
-        startActivity(resetIntent);
+        Bundle bundle = new Bundle();
+        bundle.putString("email", UserEmail.getText().toString());
+        getSupportFragmentManager().beginTransaction().replace(R.id.login_fragment_container,
+                new ResetPasswordFragment()).commit();
     }
 
     private void sendToMain()

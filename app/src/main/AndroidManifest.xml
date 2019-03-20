@@ -15,7 +15,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".ResetPasswordActivity">
+        <activity android:name=".ResetPasswordFragment">
             <intent-filter>
                 <action android:name="android.intent.action.SEND" />
             </intent-filter>

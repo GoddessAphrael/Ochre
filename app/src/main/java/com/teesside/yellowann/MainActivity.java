@@ -17,10 +17,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
 
-public class MainActivity extends AppCompatActivity
+public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener
 {
     private DrawerLayout Drawer;
     private NavigationView NavView;
@@ -44,20 +42,21 @@ public class MainActivity extends AppCompatActivity
 
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle(R.string.home);
-        drawerToggle = setupDrawerToggle();
+
+        drawerToggle = new ActionBarDrawerToggle(MainActivity.this, Drawer, toolbar,
+                R.string.drawer_open, R.string.drawer_close);
         drawerToggle.syncState();
 
         Drawer.addDrawerListener(drawerToggle);
 
-        NavView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener()
+        NavView.setNavigationItemSelectedListener(MainActivity.this);
+
+        UserAccount.setOnClickListener(new View.OnClickListener()
         {
             @Override
-            public boolean onNavigationItemSelected(MenuItem menuItem)
+            public void onClick(View v)
             {
-                //selectDrawerItem(menuItem);
-                Drawer.closeDrawers();
 
-                return true;
             }
         });
 
@@ -66,8 +65,6 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void onClick(View v)
             {
-                mAuth = FirebaseAuth.getInstance();
-
                 AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this)
                         .setCancelable(true).setTitle("Logout").setMessage("Are you sure you want to logout?");
 
@@ -97,11 +94,55 @@ public class MainActivity extends AppCompatActivity
                 dialog.show();
             }
         });
+
+        if (savedInstanceState == null)
+        {
+            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
+                    new HomeFragment()).commit();
+        }
     }
 
-    private ActionBarDrawerToggle setupDrawerToggle()
+    @Override
+    public boolean onNavigationItemSelected(MenuItem menuItem)
     {
-        return new ActionBarDrawerToggle(MainActivity.this, Drawer, toolbar, R.string.drawer_open, R.string.drawer_close);
+        switch(menuItem.getItemId())
+        {
+            case R.id.nav_home:
+                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
+                        new HomeFragment()).commit();
+                break;
+            case R.id.nav_favourites:
+                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
+                        new FavouriteFragment()).commit();
+                break;
+            case R.id.nav_image:
+                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
+                        new ImageFragment()).commit();
+                break;
+            case R.id.nav_text:
+                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
+                        new TextFragment()).commit();
+                break;
+            case R.id.nav_analysis:
+                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
+                        new AnalysisFragment()).commit();
+                break;
+        }
+        Drawer.closeDrawer(GravityCompat.START);
+        return true;
+    }
+
+    @Override
+    public void onBackPressed()
+    {
+        if (Drawer.isDrawerOpen(GravityCompat.START))
+        {
+            Drawer.closeDrawer(GravityCompat.START);
+        }
+        else
+        {
+            super.onBackPressed();
+        }
     }
 
     @Override
@@ -113,40 +154,4 @@ public class MainActivity extends AppCompatActivity
         }
         return super.onOptionsItemSelected(item);
     }
-
-//    public void selectDrawerItem(MenuItem menuItem)
-//    {
-//        Fragment fragment = null;
-//        Class fragmentClass;
-//        switch(menuItem.getItemId())
-//        {
-//            case R.id.nav_first_fragment:
-//                fragmentClass = FirstFragment.class;
-//                break;
-//            case R.id.nav_second_fragment:
-//                fragmentClass = SecondFragment.class;
-//                break;
-//            case R.id.nav_third_fragment:
-//                fragmentClass = ThirdFragment.class;
-//                break;
-//            default:
-//                fragmentClass = FirstFragment.class;
-//        }
-//
-//        try
-//        {
-//            fragment = (Fragment) fragmentClass.newInstance();
-//        }
-//        catch (Exception e)
-//        {
-//
-//        }
-//
-//        FragmentManager fragmentManager = getSupportFragmentManager();
-//        fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
-//
-//        menuItem.setChecked(true);
-//        setTitle(menuItem.getTitle());
-//        Drawer.closeDrawers();
-//    }
 }
