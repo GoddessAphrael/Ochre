@@ -2,6 +2,7 @@ package com.teesside.yellowann;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
@@ -34,6 +35,9 @@ public class ResetPasswordFragment extends Fragment
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState)
     {
+        ActionBar actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
+
+        if (actionBar != null) { actionBar.setTitle(R.string.reset); }
         return inflater.inflate(R.layout.fragment_reset_password, container, false);
     }
 
@@ -48,7 +52,11 @@ public class ResetPasswordFragment extends Fragment
         ResetPassword = v.findViewById(R.id.ResetButton);
         UserEmail = v.findViewById(R.id.EmailRecovery);
 
-
+        Bundle arguments = getArguments();
+        if (arguments != null) {
+            String email  = arguments.getString("email");
+            UserEmail.setText(email);
+        }
 
         Cancel.setOnClickListener(new View.OnClickListener()
         {

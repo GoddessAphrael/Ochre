@@ -6,6 +6,7 @@ import android.os.Bundle;
 
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 import android.view.MenuItem;
 import android.view.View;
@@ -56,7 +57,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             @Override
             public void onClick(View v)
             {
-
+                sendToPasswordReset(v);
             }
         });
 
@@ -153,5 +154,19 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void sendToPasswordReset(View v)
+    {
+        ResetPasswordFragment reset = new ResetPasswordFragment();
+
+        Bundle bundle = new Bundle();
+        bundle.putString("email", mAuth.getCurrentUser().getEmail());
+        reset.setArguments(bundle);
+
+        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
+                reset).addToBackStack(null).commit();
+
+        Drawer.closeDrawer(GravityCompat.START);
     }
 }
