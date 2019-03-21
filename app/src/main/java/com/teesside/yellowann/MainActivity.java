@@ -2,16 +2,21 @@ package com.teesside.yellowann;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
+import android.provider.MediaStore;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AlertDialog;
@@ -27,6 +32,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private Toolbar toolbar;
     private ActionBarDrawerToggle drawerToggle;
     private TextView UserAccount, UserLogout;
+    private FloatingActionButton Fab;
     private FirebaseAuth mAuth;
     private FirebaseStorage mStorage;
     private StorageReference mStorageRef;
@@ -39,6 +45,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         Drawer = findViewById(R.id.drawer_layout);
         NavView = findViewById(R.id.navigation_view);
         toolbar = findViewById(R.id.toolbar);
+        Fab = findViewById(R.id.fab);
         UserAccount = findViewById(R.id.account);
         UserLogout = findViewById(R.id.logout);
 
@@ -56,6 +63,25 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         Drawer.addDrawerListener(drawerToggle);
 
         NavView.setNavigationItemSelectedListener(MainActivity.this);
+
+        Fab.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                if(MainActivity.this.getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA) == false)
+                {
+                    Toast.makeText(MainActivity.this, "Unable to Capture new Image - This device has no Camera",
+                            Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                else
+                {
+                    Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                    startActivityForResult(cameraIntent, 1);
+                }
+            }
+        });
 
         UserAccount.setOnClickListener(new View.OnClickListener()
         {
@@ -173,5 +199,18 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 reset).addToBackStack(null).commit();
 
         Drawer.closeDrawer(GravityCompat.START);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data)
+    {
+        ImageFragment image = new ImageFragment();
+
+        Bundle bundle = new Bundle();
+        bundle.putParcelable("image", (Bitmap) data.getExtras().get("data"));
+        image.setArguments(bundle);
+
+        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
+                image).commitAllowingStateLoss();
     }
 }

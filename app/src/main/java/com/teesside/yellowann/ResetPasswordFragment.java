@@ -53,7 +53,8 @@ public class ResetPasswordFragment extends Fragment
         UserEmail = v.findViewById(R.id.EmailRecovery);
 
         Bundle arguments = getArguments();
-        if (arguments != null) {
+        if (arguments != null)
+        {
             String email  = arguments.getString("email");
             UserEmail.setText(email);
         }

@@ -8,11 +8,11 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal">
 
-    <ListView
-        android:id="@+id/recent"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:entries="@array/example" />
+        <ListView
+            android:id="@+id/recent"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:entries="@array/example" />
     </LinearLayout>
 
 </RelativeLayout>
