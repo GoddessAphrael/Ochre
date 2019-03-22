@@ -4,14 +4,14 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
 
+import android.os.Environment;
 import android.os.Handler;
 import android.provider.MediaStore;
 import android.view.MenuItem;
@@ -19,10 +19,17 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.File;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
+
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.content.FileProvider;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
@@ -35,6 +42,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private TextView UserAccount, UserLogout;
     private FloatingActionButton Fab;
     private FirebaseAuth mAuth;
+    private String currentPhotoPath;
 
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -75,7 +83,23 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 else
                 {
                     Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                    startActivityForResult(cameraIntent, 1);
+                    if (cameraIntent.resolveActivity(getPackageManager()) != null) {
+                        File photoFile = null;
+                        try
+                        {
+                            photoFile = createImageFile();
+                        }
+                        catch (IOException e)
+                        {
+
+                        }
+                        if (photoFile != null) {
+                            Uri photoURI = FileProvider.getUriForFile(MainActivity.this,
+                                    "com.teesside.yellowann.provider", photoFile);
+                            cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
+                            startActivityForResult(cameraIntent, 1);
+                        }
+                    }
                 }
             }
         });
@@ -198,13 +222,26 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         Drawer.closeDrawer(GravityCompat.START);
     }
 
+    public File createImageFile() throws IOException
+    {
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.UK).format(new Date());
+        String imageFileName = "JPEG_" + timeStamp + "_";
+        File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+        File image = File.createTempFile(imageFileName,".jpg", storageDir);
+
+        currentPhotoPath = image.getAbsolutePath();
+        return image;
+    }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data)
     {
+        super.onActivityResult(requestCode, resultCode, data);
+
         final ImageFragment image = new ImageFragment();
 
         Bundle bundle = new Bundle();
-        bundle.putParcelable("image", (Bitmap) data.getExtras().get("data"));
+        bundle.putString("path", currentPhotoPath);
         image.setArguments(bundle);
 
         new Handler().post(new Runnable()
