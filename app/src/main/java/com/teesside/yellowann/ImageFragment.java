@@ -1,11 +1,13 @@
 package com.teesside.yellowann;
 
+import android.annotation.SuppressLint;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -14,7 +16,6 @@ import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageMetadata;
@@ -27,6 +28,10 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import androidx.annotation.Nullable;
+import androidx.appcompat.view.menu.MenuBuilder;
+import androidx.appcompat.view.menu.MenuPopupHelper;
+import androidx.appcompat.widget.AppCompatImageButton;
+import androidx.appcompat.widget.PopupMenu;
 import androidx.fragment.app.Fragment;
 
 public class ImageFragment extends Fragment
@@ -34,6 +39,7 @@ public class ImageFragment extends Fragment
     private String currentPhotoPath;
     private ProgressBar progressBar;
     private ImageView imageCapture;
+    private AppCompatImageButton editImage, convertImage;
     private FirebaseStorage mStorage;
     private StorageReference mStorageRef;
     private StorageMetadata metaData;
@@ -54,6 +60,8 @@ public class ImageFragment extends Fragment
 
         imageCapture = v.findViewById(R.id.new_image);
         progressBar = v.findViewById(R.id.uploadProgress);
+        editImage = v.findViewById(R.id.edit_image);
+        convertImage = v.findViewById(R.id.convert_image);
 
         mStorage = FirebaseStorage.getInstance();
         mStorageRef = mStorage.getReference();
@@ -65,6 +73,46 @@ public class ImageFragment extends Fragment
             currentPhotoPath = arguments.getString("path");
             setPic();
         }
+
+        editImage.setOnClickListener(new View.OnClickListener()
+        {
+            @SuppressLint("RestrictedApi")
+            @Override
+            public void onClick(View v)
+            {
+                PopupMenu popup = new PopupMenu(getActivity(), editImage);
+                popup.getMenuInflater().inflate(R.menu.popup_menu, popup.getMenu());
+
+                popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener()
+                {
+                    public boolean onMenuItemClick(MenuItem menuItem)
+                    {
+                        switch(menuItem.getItemId())
+                        {
+                            case R.id.popup_favourite:
+
+                                break;
+                            case R.id.popup_crop:
+
+                                break;
+                            case R.id.popup_open:
+
+                                break;
+                            case R.id.popup_save:
+                                uploadToCloud();
+                                break;
+                            case R.id.popup_delete:
+
+                                break;
+                        }
+                        return true;
+                    }
+                });
+                MenuPopupHelper menuHelper = new MenuPopupHelper(getContext(), (MenuBuilder) popup.getMenu(), editImage);
+                menuHelper.setForceShowIcon(true);
+                menuHelper.show();
+            }
+        });
     }
 
     private void setPic()
@@ -84,11 +132,10 @@ public class ImageFragment extends Fragment
         imageCapture.setImageBitmap(bitmap);
     }
 
-    public void uploadToCloud(File image)
+    public void uploadToCloud()
     {
         final String TAG = "uploadToCloud.uploadTask";
-
-        final Uri file = Uri.fromFile(image);
+        Uri file = Uri.parse(currentPhotoPath);
         metaData = new StorageMetadata.Builder().setContentType("image/jpg").build();
         uploadTask = mStorageRef.child("images/" + file.getLastPathSegment()).putFile(file, metaData);
 
@@ -108,7 +155,7 @@ public class ImageFragment extends Fragment
             {
                 progressBar.setVisibility(View.GONE);
                 Log.w(TAG, "uploadToCloud.uploadTask:failure", exception);
-                Toast.makeText(getActivity(), "Unable to Login: "
+                Toast.makeText(getActivity(), "Unable to Upload: "
                         + exception.getMessage(), Toast.LENGTH_SHORT).show();
             }
         }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>()
