@@ -244,6 +244,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         bundle.putString("path", currentPhotoPath);
         image.setArguments(bundle);
 
+        NavView.setCheckedItem(R.id.nav_image);
+
         new Handler().post(new Runnable()
         {
             public void run()

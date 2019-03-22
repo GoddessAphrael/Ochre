@@ -20,4 +20,6 @@
     <string name="navigation">Navigation</string>
     <string name="drawer_open">Open navigation drawer</string>
     <string name="drawer_close">Close navigation drawer</string>
+    <string name="crop">Crop Image</string>
+    <string name="convert">Convert Image</string>
 </resources>
