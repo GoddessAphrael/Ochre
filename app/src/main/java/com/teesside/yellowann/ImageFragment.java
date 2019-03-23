@@ -191,9 +191,10 @@ public class ImageFragment extends Fragment
     private void uploadToCloud()
     {
         final String TAG = "uploadToCloud.uploadTask";
-        Uri file = Uri.parse(currentPhotoPath);
+        File f = new File(currentPhotoPath);
+        Uri uri = Uri.fromFile(f);
         metaData = new StorageMetadata.Builder().setContentType("image/jpg").build();
-        uploadTask = mStorageRef.child("images/" + file.getLastPathSegment()).putFile(file, metaData);
+        uploadTask = mStorageRef.child("images/" + uri.getLastPathSegment()).putFile(uri, metaData);
 
         uploadTask.addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>()
         {
@@ -203,6 +204,7 @@ public class ImageFragment extends Fragment
                 progressBar.setVisibility(View.VISIBLE);
                 progressBar.setProgress(Math.toIntExact
                         ((taskSnapshot.getBytesTransferred() / taskSnapshot.getTotalByteCount()) * 100));
+                Toast.makeText(getActivity(), "Upload in Progress", Toast.LENGTH_SHORT).show();
             }
         }).addOnFailureListener(new OnFailureListener()
         {
@@ -221,6 +223,7 @@ public class ImageFragment extends Fragment
             {
                 progressBar.setVisibility(View.GONE);
                 Log.d(TAG, "uploadToCloud.uploadTask:success");
+                Toast.makeText(getActivity(), "Upload Complete", Toast.LENGTH_SHORT).show();
             }
         });
     }
