@@ -10,6 +10,7 @@ import android.os.Bundle;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.storage.FirebaseStorage;
 
 import android.os.Environment;
 import android.os.Handler;
@@ -44,6 +45,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private TextView UserAccount, UserLogout;
     private FloatingActionButton Fab;
     private FirebaseAuth mAuth;
+    private FirebaseStorage mStorage;
     private String currentPhotoPath;
 
     static final protected Integer REQUEST_IMAGE_CAPTURE = 1;
@@ -247,12 +249,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         this.sendBroadcast(mediaScanIntent);
     }
 
-    public void loadImage()
+    public void loadLocalImage()
     {
         Intent photoPickerIntent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
         startActivityForResult(photoPickerIntent, RESULT_LOAD_IMG);
     }
 
+    public void loadCloudImage()
+    {
+        mStorage = FirebaseStorage.getInstance();
+    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data)

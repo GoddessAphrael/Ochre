@@ -109,24 +109,17 @@ public class ImageFragment extends Fragment
                                 Toast.makeText(getActivity(), "Unable to Crop: Not Implemented",
                                         Toast.LENGTH_SHORT).show();
                                 break;
-                            case R.id.popup_open:
-                                loadImage();
+                            case R.id.popup_open_local:
+                                loadLocalImageConfirm();
+                                break;
+                            case R.id.popup_open_cloud:
+                                loadCloudImageConfirm();
                                 break;
                             case R.id.popup_save:
                                 uploadToCloud();
                                 break;
                             case R.id.popup_delete:
-                                if (imageCapture.getDrawable() != null)
-                                {
-                                    confirmDelete();
-                                }
-                                else
-                                {
-                                    Log.w("Popup_Delete", "Popup_Delete:failure");
-                                    Toast.makeText(getActivity(), "Unable to Delete: No current Image",
-                                            Toast.LENGTH_SHORT).show();
-                                }
-
+                                confirmDelete();
                                 break;
                         }
                         return true;
@@ -166,17 +159,45 @@ public class ImageFragment extends Fragment
         imageCapture.setImageBitmap(bitmap);
     }
 
-    private void loadImage()
+    private void loadLocalImageConfirm()
     {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity())
                 .setCancelable(true).setTitle("Load").setMessage("Load image?");
 
-        builder.setPositiveButton(R.string.open, new DialogInterface.OnClickListener()
+        builder.setPositiveButton(R.string.open_local, new DialogInterface.OnClickListener()
         {
             @Override
             public void onClick(DialogInterface dialog, int which)
             {
-                ((MainActivity) getActivity()).loadImage();
+                ((MainActivity) getActivity()).loadLocalImage();
+            }
+        });
+
+        builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener()
+        {
+            @Override
+            public void onClick(DialogInterface dialog, int which)
+            {
+                dialog.cancel();
+            }
+        });
+
+        AlertDialog dialog = builder.create();
+        dialog.show();
+    }
+
+    private void loadCloudImageConfirm()
+    {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity())
+                .setCancelable(true).setTitle("Load").setMessage("Load image?");
+
+        builder.setPositiveButton(R.string.open_cloud, new DialogInterface.OnClickListener()
+        {
+            @Override
+            public void onClick(DialogInterface dialog, int which)
+            {
+                Toast.makeText(getActivity(), "Unable to Load from Cloud: Not Implemented",
+                        Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -235,32 +256,42 @@ public class ImageFragment extends Fragment
 
     private void confirmDelete()
     {
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity())
-                .setCancelable(true).setTitle("Delete").setMessage("Are you sure you want to delete this image?");
-
-        builder.setPositiveButton(R.string.delete, new DialogInterface.OnClickListener()
+        if (imageCapture.getDrawable() != null)
         {
-            @Override
-            public void onClick(DialogInterface dialog, int which)
-            {
-                imageCapture.setImageDrawable(null);
-                File file = new File(currentPhotoPath);
-                file.delete();
-                getActivity().sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE,
-                        Uri.fromFile(new File(currentPhotoPath))));
-            }
-        });
 
-        builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener()
+            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity())
+                    .setCancelable(true).setTitle("Delete").setMessage("Are you sure you want to delete this image?");
+
+            builder.setPositiveButton(R.string.delete, new DialogInterface.OnClickListener()
+            {
+                @Override
+                public void onClick(DialogInterface dialog, int which)
+                {
+                    imageCapture.setImageDrawable(null);
+                    File file = new File(currentPhotoPath);
+                    file.delete();
+                    getActivity().sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE,
+                            Uri.fromFile(new File(currentPhotoPath))));
+                }
+            });
+
+            builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener()
+            {
+                @Override
+                public void onClick(DialogInterface dialog, int which)
+                {
+                    dialog.cancel();
+                }
+            });
+
+            AlertDialog dialog = builder.create();
+            dialog.show();
+        }
+        else
         {
-            @Override
-            public void onClick(DialogInterface dialog, int which)
-            {
-                dialog.cancel();
-            }
-        });
-
-        AlertDialog dialog = builder.create();
-        dialog.show();
+            Log.w("Popup_Delete", "Popup_Delete:failure");
+            Toast.makeText(getActivity(), "Unable to Delete: No current Image",
+                    Toast.LENGTH_SHORT).show();
+        }
     }
 }
