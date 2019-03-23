@@ -3,6 +3,7 @@ package com.teesside.yellowann;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -44,6 +45,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private FloatingActionButton Fab;
     private FirebaseAuth mAuth;
     private String currentPhotoPath;
+
+    static final protected Integer REQUEST_IMAGE_CAPTURE = 1;
+    static final protected Integer RESULT_LOAD_IMG = 2;
 
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -98,7 +102,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                             Uri photoURI = FileProvider.getUriForFile(MainActivity.this,
                                     "com.teesside.yellowann.provider", photoFile);
                             cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
-                            startActivityForResult(cameraIntent, 1);
+                            startActivityForResult(cameraIntent, REQUEST_IMAGE_CAPTURE);
                         }
                     }
                 }
@@ -243,28 +247,48 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         this.sendBroadcast(mediaScanIntent);
     }
 
+    public void loadImage()
+    {
+        Intent photoPickerIntent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        startActivityForResult(photoPickerIntent, RESULT_LOAD_IMG);
+    }
+
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data)
     {
         super.onActivityResult(requestCode, resultCode, data);
 
-        galleryAddPic();
-
         final ImageFragment image = new ImageFragment();
 
-        Bundle bundle = new Bundle();
-        bundle.putString("path", currentPhotoPath);
-        image.setArguments(bundle);
-
-        NavView.setCheckedItem(R.id.nav_image);
-
-        new Handler().post(new Runnable()
+        if (resultCode == RESULT_OK)
         {
-            public void run()
+            if (requestCode== REQUEST_IMAGE_CAPTURE)
             {
-                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
-                        image).commit();
+                galleryAddPic();
+                NavView.setCheckedItem(R.id.nav_image);
             }
-        });
+            else if (requestCode == RESULT_LOAD_IMG)
+            {
+                Uri loadImageUri = data.getData();
+                String[] filePath = { MediaStore.Images.Media.DATA };
+                Cursor cursor = getContentResolver().query(loadImageUri, filePath, null, null, null);
+                cursor.moveToFirst();
+                currentPhotoPath = cursor.getString(cursor.getColumnIndex(filePath[0]));
+            }
+
+            Bundle bundle = new Bundle();
+            bundle.putString("path", currentPhotoPath);
+            image.setArguments(bundle);
+
+            new Handler().post(new Runnable()
+            {
+                public void run()
+                {
+                    getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
+                            image).commit();
+                }
+            });
+        }
     }
 }
