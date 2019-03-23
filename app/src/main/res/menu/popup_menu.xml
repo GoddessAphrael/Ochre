@@ -15,7 +15,28 @@
             android:enabled="true"
             android:icon="@android:drawable/ic_menu_set_as"
             android:title="@string/open"
-            android:visible="true" />
+            android:visible="true" >
+
+            <menu xmlns:android="http://schemas.android.com/apk/res/android">
+                <group android:checkableBehavior="single">
+                    <item
+                        android:id="@+id/popup_open_local"
+                        android:checkable="false"
+                        android:enabled="true"
+                        android:icon="@android:drawable/ic_menu_set_as"
+                        android:title="@string/open_local"
+                        android:visible="true" />
+
+                    <item
+                        android:id="@+id/popup_open_cloud"
+                        android:checkable="false"
+                        android:enabled="true"
+                        android:icon="@android:drawable/ic_menu_set_as"
+                        android:title="@string/open_cloud"
+                        android:visible="true" />
+                </group>
+            </menu>
+        </item>
 
         <item
             android:id="@+id/popup_save"
