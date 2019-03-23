@@ -138,6 +138,16 @@ public class ImageFragment extends Fragment
                 menuHelper.show();
             }
         });
+
+        convertImage.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                Toast.makeText(getActivity(), "Unable to Convert: Not Implemented",
+                        Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     private void setPic()
