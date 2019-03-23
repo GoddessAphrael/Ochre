@@ -37,7 +37,6 @@ dependencies {
     implementation 'com.google.firebase:firebase-storage:16.0.5'
 
     //third
-    implementation 'com.github.yalantis:ucrop:2.2.2'
 
     //api
 

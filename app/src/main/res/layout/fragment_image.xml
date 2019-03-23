@@ -66,5 +66,17 @@
         app:layout_constraintVertical_bias="0.503"
         app:srcCompat="@android:drawable/ic_menu_sort_alphabetically" />
 
+    <CheckBox
+        android:id="@+id/favourite_star"
+        style="?android:attr/starStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        app:layout_constraintBottom_toBottomOf="@+id/new_image"
+        app:layout_constraintEnd_toEndOf="@+id/new_image"
+        app:layout_constraintHorizontal_bias="0.994"
+        app:layout_constraintStart_toStartOf="@+id/new_image"
+        app:layout_constraintTop_toTopOf="@+id/new_image"
+        app:layout_constraintVertical_bias="0.0" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

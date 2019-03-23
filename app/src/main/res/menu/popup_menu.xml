@@ -2,14 +2,6 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <group android:checkableBehavior="single">
         <item
-            android:id="@+id/popup_favourite"
-            android:checkable="false"
-            android:enabled="true"
-            android:icon="@android:drawable/star_big_off"
-            android:title="@string/favourite"
-            android:visible="true" />
-
-        <item
             android:id="@+id/popup_crop"
             android:checkable="false"
             android:enabled="true"

@@ -1,6 +1,8 @@
 package com.teesside.yellowann;
 
 import android.annotation.SuppressLint;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
@@ -10,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
@@ -25,6 +28,7 @@ import com.google.firebase.storage.UploadTask;
 import java.io.File;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import androidx.annotation.Nullable;
@@ -40,6 +44,7 @@ public class ImageFragment extends Fragment
     private ProgressBar progressBar;
     private ImageView imageCapture;
     private AppCompatImageButton editImage, convertImage;
+    private CheckBox favouriteStar;
     private FirebaseStorage mStorage;
     private StorageReference mStorageRef;
     private StorageMetadata metaData;
@@ -62,6 +67,7 @@ public class ImageFragment extends Fragment
         progressBar = v.findViewById(R.id.uploadProgress);
         editImage = v.findViewById(R.id.edit_image);
         convertImage = v.findViewById(R.id.convert_image);
+        favouriteStar = v.findViewById(R.id.favourite_star);
 
         mStorage = FirebaseStorage.getInstance();
         mStorageRef = mStorage.getReference();
@@ -73,6 +79,16 @@ public class ImageFragment extends Fragment
             currentPhotoPath = arguments.getString("path");
             setPic();
         }
+
+        favouriteStar.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                Toast.makeText(getActivity(), "Unable to Favourite: Not Implemented",
+                        Toast.LENGTH_SHORT).show();
+            }
+        });
 
         editImage.setOnClickListener(new View.OnClickListener()
         {
@@ -89,19 +105,28 @@ public class ImageFragment extends Fragment
                     {
                         switch(menuItem.getItemId())
                         {
-                            case R.id.popup_favourite:
-
-                                break;
                             case R.id.popup_crop:
-
+                                Toast.makeText(getActivity(), "Unable to Crop: Not Implemented",
+                                        Toast.LENGTH_SHORT).show();
                                 break;
                             case R.id.popup_open:
-
+                                Toast.makeText(getActivity(), "Unable to Load: Not Implemented",
+                                        Toast.LENGTH_SHORT).show();
                                 break;
                             case R.id.popup_save:
                                 uploadToCloud();
                                 break;
                             case R.id.popup_delete:
+                                if (imageCapture.getDrawable() != null)
+                                {
+                                    confirmDelete();
+                                }
+                                else
+                                {
+                                    Log.w("Popup_Delete", "Popup_Delete:failure");
+                                    Toast.makeText(getActivity(), "Unable to Delete: No current Image",
+                                            Toast.LENGTH_SHORT).show();
+                                }
 
                                 break;
                         }
@@ -132,7 +157,38 @@ public class ImageFragment extends Fragment
         imageCapture.setImageBitmap(bitmap);
     }
 
-    public void uploadToCloud()
+    private void confirmDelete()
+    {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity())
+                .setCancelable(true).setTitle("Delete").setMessage("Are you sure you want to delete this image?");
+
+        builder.setPositiveButton(R.string.delete, new DialogInterface.OnClickListener()
+        {
+            @Override
+            public void onClick(DialogInterface dialog, int which)
+            {
+                imageCapture.setImageDrawable(null);
+                File file = new File(currentPhotoPath);
+                file.delete();
+                getActivity().sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE,
+                        Uri.fromFile(new File(currentPhotoPath))));
+            }
+        });
+
+        builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener()
+        {
+            @Override
+            public void onClick(DialogInterface dialog, int which)
+            {
+                dialog.cancel();
+            }
+        });
+
+        AlertDialog dialog = builder.create();
+        dialog.show();
+    }
+
+    private void uploadToCloud()
     {
         final String TAG = "uploadToCloud.uploadTask";
         Uri file = Uri.parse(currentPhotoPath);
