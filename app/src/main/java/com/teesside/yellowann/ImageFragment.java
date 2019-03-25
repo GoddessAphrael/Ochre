@@ -245,8 +245,10 @@ public class ImageFragment extends Fragment
             {
                 for (DataSnapshot childSnapshot : dataSnapshot.getChildren())
                 {
-                    String data = childSnapshot.child("downloadUrl").getValue().toString();
-                    list.add(data);
+                    for (DataSnapshot childChildSnapshot : childSnapshot.getChildren()) {
+                        String data = childChildSnapshot.child("downloadUrl").getValue().toString();
+                        list.add(data);
+                    }
                 }
 
                 ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>
