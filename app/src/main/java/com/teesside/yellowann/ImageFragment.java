@@ -12,13 +12,22 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageMetadata;
@@ -26,6 +35,7 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
 import java.io.File;
+import java.util.ArrayList;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
@@ -38,6 +48,9 @@ import androidx.appcompat.widget.AppCompatImageButton;
 import androidx.appcompat.widget.PopupMenu;
 import androidx.fragment.app.Fragment;
 
+import org.apache.commons.io.FilenameUtils;
+
+
 public class ImageFragment extends Fragment
 {
     private String currentPhotoPath;
@@ -45,10 +58,15 @@ public class ImageFragment extends Fragment
     private ImageView imageCapture;
     private AppCompatImageButton editImage, convertImage;
     private CheckBox favouriteStar;
+    private FirebaseAuth mAuth;
     private FirebaseStorage mStorage;
     private StorageReference mStorageRef;
     private StorageMetadata metaData;
     private UploadTask uploadTask;
+    private DatabaseReference mDataRef;
+    private ListView cloudList;
+
+    private ArrayList<String> list;
 
     @Nullable
     @Override
@@ -68,9 +86,12 @@ public class ImageFragment extends Fragment
         editImage = v.findViewById(R.id.edit_image);
         convertImage = v.findViewById(R.id.convert_image);
         favouriteStar = v.findViewById(R.id.favourite_star);
+        cloudList = v.findViewById(R.id.loadList);
 
+        mAuth = FirebaseAuth.getInstance();
         mStorage = FirebaseStorage.getInstance();
         mStorageRef = mStorage.getReference();
+        mDataRef = FirebaseDatabase.getInstance().getReference();
 
         Bundle arguments = getArguments();
 
@@ -196,8 +217,7 @@ public class ImageFragment extends Fragment
             @Override
             public void onClick(DialogInterface dialog, int which)
             {
-                Toast.makeText(getActivity(), "Unable to Load from Cloud: Not Implemented",
-                        Toast.LENGTH_SHORT).show();
+                getImagesList();
             }
         });
 
@@ -214,44 +234,96 @@ public class ImageFragment extends Fragment
         dialog.show();
     }
 
+    private void getImagesList()
+    {
+        mDataRef.addListenerForSingleValueEvent(new ValueEventListener()
+        {
+            final String TAG = "getImagesList";
+
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot)
+            {
+                for (DataSnapshot childSnapshot : dataSnapshot.getChildren())
+                {
+                    String data = childSnapshot.child("downloadUrl").getValue().toString();
+                    list.add(data);
+                }
+
+                ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>
+                        (getActivity(), android.R.layout.simple_list_item_1, list);
+
+                cloudList.setAdapter(arrayAdapter);
+
+                getFragmentManager().beginTransaction().replace(R.id.fragment_container,
+                        new LoadFragment()).commit();
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError)
+            {
+                Log.w(TAG, "getImagesList:onCancelled", databaseError.toException());
+            }
+        });
+    }
+
     private void uploadToCloud()
     {
         final String TAG = "uploadToCloud.uploadTask";
-        File f = new File(currentPhotoPath);
-        Uri uri = Uri.fromFile(f);
-        metaData = new StorageMetadata.Builder().setContentType("image/jpg").build();
-        uploadTask = mStorageRef.child("images/" + uri.getLastPathSegment()).putFile(uri, metaData);
+        try
+        {
+            final File f = new File(currentPhotoPath);
+            Uri uri = Uri.fromFile(f);
+            metaData = new StorageMetadata.Builder().setContentType("image/jpg").build();
+            uploadTask = mStorageRef.child(mAuth.getCurrentUser().getUid() + "/images/" + uri.getLastPathSegment()).putFile(uri, metaData);
 
-        uploadTask.addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>()
-        {
-            @Override
-            public void onProgress(UploadTask.TaskSnapshot taskSnapshot)
+            uploadTask.addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>()
             {
-                progressBar.setVisibility(View.VISIBLE);
-                progressBar.setProgress(Math.toIntExact
-                        ((taskSnapshot.getBytesTransferred() / taskSnapshot.getTotalByteCount()) * 100));
-                Toast.makeText(getActivity(), "Upload in Progress", Toast.LENGTH_SHORT).show();
-            }
-        }).addOnFailureListener(new OnFailureListener()
-        {
-            @Override
-            public void onFailure(@NonNull Exception exception)
+                @Override
+                public void onProgress(UploadTask.TaskSnapshot taskSnapshot)
+                {
+                    progressBar.setVisibility(View.VISIBLE);
+                    progressBar.setProgress(Math.toIntExact
+                            ((taskSnapshot.getBytesTransferred() / taskSnapshot.getTotalByteCount()) * 100));
+                    Toast.makeText(getActivity(), "Upload in Progress", Toast.LENGTH_SHORT).show();
+                }
+            }).addOnFailureListener(new OnFailureListener()
             {
-                progressBar.setVisibility(View.GONE);
-                Log.w(TAG, "uploadToCloud.uploadTask:failure", exception);
-                Toast.makeText(getActivity(), "Unable to Upload: "
-                        + exception.getMessage(), Toast.LENGTH_SHORT).show();
-            }
-        }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>()
-        {
-            @Override
-            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot)
+                @Override
+                public void onFailure(@NonNull Exception exception)
+                {
+                    progressBar.setVisibility(View.GONE);
+                    Log.w(TAG, "uploadToCloud.uploadTask:failure", exception);
+                    Toast.makeText(getActivity(), "Unable to Upload: "
+                            + exception.getMessage(), Toast.LENGTH_SHORT).show();
+                }
+            }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>()
             {
-                progressBar.setVisibility(View.GONE);
-                Log.d(TAG, "uploadToCloud.uploadTask:success");
-                Toast.makeText(getActivity(), "Upload Complete", Toast.LENGTH_SHORT).show();
-            }
-        });
+                @Override
+                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot)
+                {
+                    final Task<Uri> downloadUri = taskSnapshot.getMetadata().getReference().getDownloadUrl();
+
+                    downloadUri.addOnSuccessListener(new OnSuccessListener<Uri>()
+                    {
+                        @Override
+                        public void onSuccess(Uri uri)
+                        {
+                            Image image = new Image(downloadUri.toString());
+                            mDataRef.child("user/" + mAuth.getCurrentUser().getUid() + "/" + FilenameUtils.getBaseName(f.getName())).setValue(image);
+                        }
+                    });
+
+                    progressBar.setVisibility(View.GONE);
+                    Log.d(TAG, "uploadToCloud.uploadTask:success");
+                    Toast.makeText(getActivity(), "Upload Complete", Toast.LENGTH_SHORT).show();
+                }
+            });
+        }
+        catch (NullPointerException e)
+        {
+            Log.d(TAG, "uploadToCloud.imageCapture:null");
+            Toast.makeText(getActivity(), "Unable to Upload: Please Load Local Image", Toast.LENGTH_SHORT).show();
+        }
     }
 
     private void confirmDelete()

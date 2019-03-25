@@ -10,7 +10,10 @@ import android.os.Bundle;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import android.os.Environment;
 import android.os.Handler;
@@ -23,6 +26,7 @@ import android.widget.Toast;
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
 
@@ -64,6 +68,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         UserLogout = findViewById(R.id.logout);
 
         mAuth = FirebaseAuth.getInstance();
+        mStorage = FirebaseStorage.getInstance();
 
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle(R.string.home);
@@ -253,11 +258,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     {
         Intent photoPickerIntent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
         startActivityForResult(photoPickerIntent, RESULT_LOAD_IMG);
-    }
-
-    public void loadCloudImage()
-    {
-        mStorage = FirebaseStorage.getInstance();
     }
 
     @Override

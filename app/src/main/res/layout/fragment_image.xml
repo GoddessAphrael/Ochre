@@ -23,13 +23,16 @@
     <ProgressBar
         android:id="@+id/uploadProgress"
         style="?android:attr/progressBarStyleHorizontal"
-        android:layout_width="wrap_content"
+        android:layout_width="250dp"
         android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
         android:visibility="gone"
-        app:layout_constraintBottom_toTopOf="parent"
-        app:layout_constraintEnd_toStartOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintBottom_toBottomOf="@+id/new_image"
+        app:layout_constraintEnd_toEndOf="@+id/new_image"
+        app:layout_constraintHorizontal_bias="0.487"
+        app:layout_constraintStart_toStartOf="@+id/new_image"
+        app:layout_constraintTop_toTopOf="@+id/new_image"
+        app:layout_constraintVertical_bias="0.977" />
 
     <ImageButton
         android:id="@+id/edit_image"
