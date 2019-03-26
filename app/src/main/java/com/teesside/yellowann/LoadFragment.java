@@ -24,6 +24,8 @@ import java.util.ArrayList;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 public class LoadFragment extends Fragment
 {
@@ -52,6 +54,8 @@ public class LoadFragment extends Fragment
 
         super.onViewCreated(v, savedInstanceState);
 
+        getActivity().registerReceiver(onDownloadComplete,new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE));
+
         list = (ArrayList<String>)getArguments().getSerializable("arrayList");
 
         ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>
@@ -77,8 +81,6 @@ public class LoadFragment extends Fragment
                 dLRequest.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, downloadUri.getLastPathSegment());
 
                 dLID = dLManager.enqueue(dLRequest);
-
-                getActivity().registerReceiver(onDownloadComplete,new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE));
             }
         });
     }
