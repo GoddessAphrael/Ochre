@@ -87,7 +87,7 @@ public class ImageFragment extends Fragment
         convertImage = v.findViewById(R.id.convert_image);
         favouriteStar = v.findViewById(R.id.favourite_star);
 
-        list.add("Test Example");
+        list.add("Cloud Images Available:");
 
         mAuth = FirebaseAuth.getInstance();
         mStorage = FirebaseStorage.getInstance();
