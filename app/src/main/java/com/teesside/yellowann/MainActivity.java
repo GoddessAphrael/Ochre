@@ -162,8 +162,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         if (savedInstanceState == null)
         {
-            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
-                    new HomeFragment()).commit();
+            new Handler().post(new Runnable()
+            {
+                public void run()
+                {
+                    getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
+                            new HomeFragment()).commit();
+                }
+            });
         }
     }
 
@@ -173,24 +179,54 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         switch(menuItem.getItemId())
         {
             case R.id.nav_home:
-                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
-                        new HomeFragment()).commit();
+                new Handler().post(new Runnable()
+                {
+                    public void run()
+                    {
+                        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
+                                new HomeFragment()).commit();
+                    }
+                });
                 break;
             case R.id.nav_favourites:
-                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
-                        new FavouriteFragment()).commit();
+                new Handler().post(new Runnable()
+                {
+                    public void run()
+                    {
+                        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
+                                new FavouriteFragment()).commit();
+                    }
+                });
                 break;
             case R.id.nav_image:
-                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
-                        new ImageFragment()).commit();
+                new Handler().post(new Runnable()
+                {
+                    public void run()
+                    {
+                        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
+                                new ImageFragment()).commit();
+                    }
+                });
                 break;
             case R.id.nav_text:
-                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
-                        new TextFragment()).commit();
+                new Handler().post(new Runnable()
+                {
+                    public void run()
+                    {
+                        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
+                                new TextFragment()).commit();
+                    }
+                });
                 break;
             case R.id.nav_analysis:
-                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
-                        new AnalysisFragment()).commit();
+                new Handler().post(new Runnable()
+                {
+                    public void run()
+                    {
+                        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
+                                new AnalysisFragment()).commit();
+                    }
+                });
                 break;
         }
         Drawer.closeDrawer(GravityCompat.START);
@@ -222,15 +258,19 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     private void sendToPasswordReset(View v)
     {
-        ResetPasswordFragment reset = new ResetPasswordFragment();
+        final ResetPasswordFragment reset = new ResetPasswordFragment();
 
         Bundle bundle = new Bundle();
         bundle.putString("email", mAuth.getCurrentUser().getEmail());
         reset.setArguments(bundle);
-
-        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
-                reset).addToBackStack(null).commit();
-
+        new Handler().post(new Runnable()
+        {
+           public void run()
+           {
+               getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
+                       reset).addToBackStack(null).commit();
+           }
+       });
         Drawer.closeDrawer(GravityCompat.START);
     }
 

@@ -7,6 +7,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -179,11 +180,6 @@ public class ImageFragment extends Fragment
                    if (downloadUrl != null)
                    {
                        list.add(downloadUrl);
-
-                       ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>
-                               (getActivity(), android.R.layout.simple_list_item_1, list);
-
-                       cloudList.setAdapter(arrayAdapter);
                    }
                 }
             }
@@ -271,8 +267,19 @@ public class ImageFragment extends Fragment
     {
         try
         {
-            getFragmentManager().beginTransaction().replace(R.id.fragment_container,
-                    new LoadFragment()).commit();
+            final LoadFragment load = new LoadFragment();
+
+            Bundle bundle = new Bundle();
+            bundle.putSerializable("arrayList", list);
+            load.setArguments(bundle);
+            new Handler().post(new Runnable()
+            {
+                public void run()
+                {
+                    getFragmentManager().beginTransaction().replace(R.id.fragment_container,
+                            load).addToBackStack(null).commit();
+                }
+            });
         }
         catch (Exception e)
         {
