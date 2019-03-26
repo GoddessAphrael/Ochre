@@ -13,10 +13,8 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.ImageView;
-import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
@@ -67,7 +65,6 @@ public class ImageFragment extends Fragment
     private StorageMetadata metaData;
     private UploadTask uploadTask;
     private DatabaseReference mDataRef, downloadRef;
-    private ListView cloudList;
 
     private ArrayList<String> list = new ArrayList<>();
 
@@ -89,7 +86,6 @@ public class ImageFragment extends Fragment
         editImage = v.findViewById(R.id.edit_image);
         convertImage = v.findViewById(R.id.convert_image);
         favouriteStar = v.findViewById(R.id.favourite_star);
-        cloudList = v.findViewById(R.id.loadList);
 
         list.add("Test Example");
 
