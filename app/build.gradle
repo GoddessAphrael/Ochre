@@ -1,9 +1,37 @@
 apply plugin: 'com.android.application'
+apply plugin: 'com.chaquo.python'
 apply plugin: 'com.google.gms.google-services'
 
 android {
     compileSdkVersion 28
     defaultConfig {
+        python {
+            pyc {
+                stdlib true
+            }
+            pip {
+                install "setuptools==39.1.0"
+                install "absl-py==0.7.0"
+                install "astor==0.7.1"
+                install "editdistance"
+                install "gast==0.2.2"
+                install "grpcio"
+                install "h5py"
+                install "Keras-Applications==1.0.7"
+                install "Keras-Preprocessing==1.0.8"
+                install "Markdown==3.0.1"
+                install "numpy"
+                install "opencv-python"
+                install "protobuf==3.6.1"
+                install "six==1.12.0"
+                install "tensorflow"
+                install "termcolor==1.1.0"
+                install "Werkzeug==0.14.1"
+            }
+        }
+        ndk {
+            abiFilters "armeabi-v7a", "arm64-v8a", "x86", "x86_64"
+        }
         applicationId "com.teesside.yellowann"
         minSdkVersion 27
         targetSdkVersion 28

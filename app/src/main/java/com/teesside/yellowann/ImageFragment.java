@@ -173,10 +173,7 @@ public class ImageFragment extends Fragment
                 for (DataSnapshot childSnapshot : dataSnapshot.getChildren())
                 {
                    String downloadUrl = childSnapshot.child("downloadUrl").getValue().toString();
-                   if (downloadUrl != null)
-                   {
-                       list.add(downloadUrl);
-                   }
+                   list.add(downloadUrl);
                 }
             }
 
@@ -293,7 +290,7 @@ public class ImageFragment extends Fragment
             final File f = new File(currentPhotoPath);
             final Uri uri = Uri.fromFile(f);
             metaData = new StorageMetadata.Builder().setContentType("image/jpg").build();
-            final StorageReference ref = mStorageRef.child(mAuth.getCurrentUser().getUid() + "/images/" + uri.getLastPathSegment());
+            final StorageReference ref = mStorageRef.child(mAuth.getCurrentUser().getUid() + "/Pictures/" + uri.getLastPathSegment());
             uploadTask = ref.putFile(uri, metaData);
 
             uploadTask.addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>()

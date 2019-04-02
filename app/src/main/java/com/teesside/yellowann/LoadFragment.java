@@ -16,7 +16,6 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
-import com.google.android.material.navigation.NavigationView;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -24,12 +23,9 @@ import java.util.ArrayList;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
 
 public class LoadFragment extends Fragment
 {
-    private NavigationView NavView;
     private ListView cloudList;
     private ArrayList<String> list = new ArrayList<>();
     private Uri downloadUri;
@@ -48,8 +44,6 @@ public class LoadFragment extends Fragment
     @Override
     public void onViewCreated(View v, Bundle savedInstanceState)
     {
-        NavView = v.findViewById(R.id.navigation_view);
-
         dLManager = (DownloadManager) getActivity().getSystemService(Context.DOWNLOAD_SERVICE);
 
         super.onViewCreated(v, savedInstanceState);
