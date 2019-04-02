@@ -1,13 +1,86 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/relativeLayout_Text"
     android:layout_width="match_parent"
     android:layout_height="match_parent" >
 
     <TextView
+        android:id="@+id/new_text"
+        android:layout_width="384dp"
+        android:layout_height="512dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:contentDescription="@string/text"
+        android:visibility="visible"
+        android:autofillHints="false"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.481"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ProgressBar
+        android:id="@+id/uploadProgress_text"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="250dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@+id/new_text"
+        app:layout_constraintEnd_toEndOf="@+id/new_text"
+        app:layout_constraintHorizontal_bias="0.487"
+        app:layout_constraintStart_toStartOf="@+id/new_text"
+        app:layout_constraintTop_toTopOf="@+id/new_text"
+        app:layout_constraintVertical_bias="0.977" />
+
+    <ImageButton
+        android:id="@+id/edit_text"
+        android:layout_width="64dp"
+        android:layout_height="64dp"
+        android:layout_marginStart="60dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="60dp"
+        android:layout_marginBottom="8dp"
+        android:clickable="true"
+        android:contentDescription="@string/edit"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/analyze_text"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/new_text"
+        app:srcCompat="@android:drawable/ic_menu_edit" />
+
+    <ImageButton
+        android:id="@+id/analyze_text"
+        android:layout_width="64dp"
+        android:layout_height="64dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="172dp"
+        android:layout_marginBottom="8dp"
+        android:clickable="true"
+        android:contentDescription="@string/analysis"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.988"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/new_text"
+        app:layout_constraintVertical_bias="0.503"
+        app:srcCompat="@android:drawable/ic_menu_sort_alphabetically" />
+
+    <CheckBox
+        android:id="@+id/favourite_star_text"
+        style="?android:attr/starStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/text"
-        android:textSize="30sp"
-        android:layout_centerInParent="true"/>
+        android:layout_margin="16dp"
+        app:layout_constraintBottom_toBottomOf="@+id/new_text"
+        app:layout_constraintEnd_toEndOf="@+id/new_text"
+        app:layout_constraintHorizontal_bias="0.994"
+        app:layout_constraintStart_toStartOf="@+id/new_text"
+        app:layout_constraintTop_toTopOf="@+id/new_text"
+        app:layout_constraintVertical_bias="0.0" />
 
-</RelativeLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

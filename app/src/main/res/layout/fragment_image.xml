@@ -2,12 +2,12 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/relativeLayout"
+    android:id="@+id/relativeLayout_Image"
     android:layout_width="match_parent"
     android:layout_height="match_parent" >
 
     <ImageView
-        android:id="@+id/new_image"
+        android:id="@+id/new_text"
         android:layout_width="384dp"
         android:layout_height="512dp"
         android:layout_marginStart="8dp"
@@ -21,17 +21,17 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <ProgressBar
-        android:id="@+id/uploadProgress"
+        android:id="@+id/uploadProgress_image"
         style="?android:attr/progressBarStyleHorizontal"
         android:layout_width="250dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="@+id/new_image"
-        app:layout_constraintEnd_toEndOf="@+id/new_image"
+        app:layout_constraintBottom_toBottomOf="@+id/new_text"
+        app:layout_constraintEnd_toEndOf="@+id/new_text"
         app:layout_constraintHorizontal_bias="0.487"
-        app:layout_constraintStart_toStartOf="@+id/new_image"
-        app:layout_constraintTop_toTopOf="@+id/new_image"
+        app:layout_constraintStart_toStartOf="@+id/new_text"
+        app:layout_constraintTop_toTopOf="@+id/new_text"
         app:layout_constraintVertical_bias="0.977" />
 
     <ImageButton
@@ -43,12 +43,12 @@
         android:layout_marginEnd="60dp"
         android:layout_marginBottom="8dp"
         android:clickable="true"
-        android:contentDescription="@string/crop"
+        android:contentDescription="@string/edit"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/convert_image"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/new_image"
+        app:layout_constraintTop_toBottomOf="@+id/new_text"
         app:srcCompat="@android:drawable/ic_menu_edit" />
 
     <ImageButton
@@ -65,21 +65,21 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.988"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/new_image"
+        app:layout_constraintTop_toBottomOf="@+id/new_text"
         app:layout_constraintVertical_bias="0.503"
         app:srcCompat="@android:drawable/ic_menu_sort_alphabetically" />
 
     <CheckBox
-        android:id="@+id/favourite_star"
+        android:id="@+id/favourite_star_image"
         style="?android:attr/starStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="16dp"
-        app:layout_constraintBottom_toBottomOf="@+id/new_image"
-        app:layout_constraintEnd_toEndOf="@+id/new_image"
+        app:layout_constraintBottom_toBottomOf="@+id/new_text"
+        app:layout_constraintEnd_toEndOf="@+id/new_text"
         app:layout_constraintHorizontal_bias="0.994"
-        app:layout_constraintStart_toStartOf="@+id/new_image"
-        app:layout_constraintTop_toTopOf="@+id/new_image"
+        app:layout_constraintStart_toStartOf="@+id/new_text"
+        app:layout_constraintTop_toTopOf="@+id/new_text"
         app:layout_constraintVertical_bias="0.0" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

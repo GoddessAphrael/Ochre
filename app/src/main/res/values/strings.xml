@@ -22,6 +22,7 @@
     <string name="drawer_open">Open navigation drawer</string>
     <string name="drawer_close">Close navigation drawer</string>
     <string name="crop">Crop Image</string>
+    <string name="edit">Edit</string>
     <string name="convert">Convert Image</string>
     <string name="open">Load Image</string>
     <string name="open_local">Load from Local</string>

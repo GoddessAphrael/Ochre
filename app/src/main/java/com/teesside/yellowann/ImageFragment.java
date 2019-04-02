@@ -18,6 +18,9 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.chaquo.python.PyObject;
+import com.chaquo.python.Python;
+import com.chaquo.python.android.AndroidPlatform;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -81,11 +84,11 @@ public class ImageFragment extends Fragment
     {
         super.onViewCreated(v, savedInstanceState);
 
-        imageCapture = v.findViewById(R.id.new_image);
-        progressBar = v.findViewById(R.id.uploadProgress);
+        imageCapture = v.findViewById(R.id.new_text);
+        progressBar = v.findViewById(R.id.uploadProgress_image);
         editImage = v.findViewById(R.id.edit_image);
         convertImage = v.findViewById(R.id.convert_image);
-        favouriteStar = v.findViewById(R.id.favourite_star);
+        favouriteStar = v.findViewById(R.id.favourite_star_image);
 
         list.add("Cloud Images Available:");
 
@@ -160,8 +163,15 @@ public class ImageFragment extends Fragment
             @Override
             public void onClick(View v)
             {
-                Toast.makeText(getActivity(), "Unable to Convert: Not Implemented",
-                        Toast.LENGTH_SHORT).show();
+                if (! Python.isStarted())
+                {
+                    Python.start(new AndroidPlatform(getActivity()));
+                }
+                else
+                {
+                    Python py = Python.getInstance();
+                    PyObject test = py.getModule("SimpleHRT/main");
+                }
             }
         });
 
