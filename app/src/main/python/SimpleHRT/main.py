@@ -5,9 +5,9 @@ import sys
 import argparse
 import cv2
 import editdistance
-from DataLoader import DataLoader, Batch
-from Model import Model, DecoderType
-from SamplePreprocessor import preprocess
+from .DataLoader import DataLoader, Batch
+from .Model import Model, DecoderType
+from .SamplePreprocessor import preprocess
 
 
 class FilePaths:

@@ -8,9 +8,9 @@ import copy
 import numpy as np
 import cv2
 import matplotlib.pyplot as plt
-from DataLoader import Batch
-from Model import Model, DecoderType
-from SamplePreprocessor import preprocess
+from .DataLoader  import Batch
+from .Model import Model, DecoderType
+from .SamplePreprocessor import preprocess
 
 
 # constants like filepaths
