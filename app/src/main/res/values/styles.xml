@@ -3,5 +3,6 @@
         <item name="colorPrimary">@color/ochre_launcher_background</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
     </style>
 </resources>
