@@ -22,8 +22,8 @@ class FilePaths:
 def train(model, loader):
 	"train NN"
 	epoch = 0 # number of training epochs since start
-	bestCharErrorRate = float('inf') # best valdiation character error rate
-	noImprovementSince = 0 # number of epochs no improvement of character error rate occured
+	bestCharErrorRate = float('inf') # best validation character error rate
+	noImprovementSince = 0 # number of epochs no improvement of character error rate occurred
 	earlyStopping = 5 # stop training after this number of epochs without improvement
 	while True:
 		epoch += 1
@@ -93,7 +93,7 @@ def infer(model, fnImg):
 	img = preprocess(cv2.imread(fnImg, cv2.IMREAD_GRAYSCALE), Model.imgSize)
 	batch = Batch(None, [img])
 	(recognized, probability) = model.inferBatch(batch, True)
-	print(recognized[0])
+	return recognized[0]
 	#print('Probability:', probability[0])
 
 
@@ -113,7 +113,7 @@ def main():
 	elif args.wordbeamsearch:
 		decoderType = DecoderType.WordBeamSearch
 
-	# train or validate on IAM dataset	
+	# train or validate on IAM data-set
 	if args.train or args.validate:
 		# load training data, create TF model
 		loader = DataLoader(FilePaths.fnTrain, Model.batchSize, Model.imgSize, Model.maxTextLen)
@@ -121,7 +121,7 @@ def main():
 		# save characters of model for inference mode
 		open(FilePaths.fnCharList, 'w').write(str().join(loader.charList))
 		
-		# save words contained in dataset into file
+		# save words contained in data-set into file
 		open(FilePaths.fnCorpus, 'w').write(str(' ').join(loader.trainWords + loader.validationWords))
 
 		# execute training or validation

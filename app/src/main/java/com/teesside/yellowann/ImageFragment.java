@@ -112,6 +112,7 @@ public class ImageFragment extends Fragment
             @Override
             public void onClick(View v)
             {
+                Log.w("FavouriteStar", "FavouriteStar:Pressed");
                 Toast.makeText(getActivity(), "Unable to Favourite: Not Implemented",
                         Toast.LENGTH_SHORT).show();
             }
@@ -133,6 +134,7 @@ public class ImageFragment extends Fragment
                         switch(menuItem.getItemId())
                         {
                             case R.id.popup_crop:
+                                Log.w("editImage", "crop_Image:Pressed");
                                 Toast.makeText(getActivity(), "Unable to Crop: Not Implemented",
                                         Toast.LENGTH_SHORT).show();
                                 break;
@@ -170,9 +172,8 @@ public class ImageFragment extends Fragment
                 else
                 {
                     Python py = Python.getInstance();
-                    PyObject test = py.getModule("SimpleHRT.main");
-                    Log.d("convertImage", test.toString());
-                    Toast.makeText(getActivity(), test.toString(), Toast.LENGTH_SHORT).show();
+                    PyObject test = py.getModule("SimpleHRT.main").get("main");
+                    PyObject test2 = test.call();
                 }
             }
         });
@@ -378,7 +379,7 @@ public class ImageFragment extends Fragment
         {
 
             AlertDialog.Builder builder = new AlertDialog.Builder(getActivity())
-                    .setCancelable(true).setTitle("Delete").setMessage("Are you sure you want to delete this image?");
+                    .setCancelable(true).setTitle("Delete").setMessage("Are you sure you want to delete this local image?");
 
             builder.setPositiveButton(R.string.delete, new DialogInterface.OnClickListener()
             {
