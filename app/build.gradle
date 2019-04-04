@@ -6,6 +6,7 @@ android {
     compileSdkVersion 28
     defaultConfig {
         python {
+            extractPackages "SimpleHRT"
             pyc {
                 stdlib true
             }

@@ -5,6 +5,7 @@ import sys
 import argparse
 import cv2
 import editdistance
+from os.path import dirname, join
 from .DataLoader import DataLoader, Batch
 from .Model import Model, DecoderType
 from .SamplePreprocessor import preprocess
@@ -12,11 +13,11 @@ from .SamplePreprocessor import preprocess
 
 class FilePaths:
 	"filenames and paths to data"
-	fnCharList = '../model/charList.txt'
-	fnAccuracy = '../model/accuracy.txt'
-	fnTrain = '../data/'
-	fnInfer = '../data/test.png'
-	fnCorpus = '../data/corpus.txt'
+	fnCharList = (join(dirname(__file__), "model/charList.txt"))
+	fnAccuracy = (join(dirname(__file__), "model/accuracy.txt"))
+	fnTrain = (join(dirname(__file__), "data"))
+	fnInfer = (join(dirname(__file__), "data/test.png"))
+	fnCorpus = (join(dirname(__file__), "data/corpus.txt"))
 
 
 def train(model, loader):
