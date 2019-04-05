@@ -5,6 +5,7 @@ import sys
 import argparse
 import cv2
 import editdistance
+import tensorflow as tf
 from os.path import dirname, join
 from .DataLoader import DataLoader, Batch
 from .Model import Model, DecoderType
@@ -99,6 +100,8 @@ def infer(model, fnImg):
 
 
 def main():
+	tf.reset_default_graph()
+
 	"main function"
 	# optional command line args
 	parser = argparse.ArgumentParser()
@@ -137,7 +140,7 @@ def main():
 	else:
 		#print(open(FilePaths.fnAccuracy).read())
 		model = Model(open(FilePaths.fnCharList).read(), decoderType, mustRestore=True)
-		infer(model, FilePaths.fnInfer)
+		return infer(model, FilePaths.fnInfer)
 
 
 if __name__ == '__main__':
