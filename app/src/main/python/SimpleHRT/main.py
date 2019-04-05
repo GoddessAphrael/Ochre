@@ -99,7 +99,7 @@ def infer(model, fnImg):
 	#print('Probability:', probability[0])
 
 
-def main():
+def main(fnImg):
 	tf.reset_default_graph()
 
 	"main function"
@@ -140,7 +140,7 @@ def main():
 	else:
 		#print(open(FilePaths.fnAccuracy).read())
 		model = Model(open(FilePaths.fnCharList).read(), decoderType, mustRestore=True)
-		return infer(model, FilePaths.fnInfer)
+		return infer(model, fnImg)
 
 
 if __name__ == '__main__':

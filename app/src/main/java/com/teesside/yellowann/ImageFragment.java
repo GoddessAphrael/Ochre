@@ -173,7 +173,7 @@ public class ImageFragment extends Fragment
                 {
                     Python py = Python.getInstance();
                     PyObject test = py.getModule("SimpleHRT.main").get("main");
-                    PyObject test2 = test.call();
+                    PyObject test2 = test.call(currentPhotoPath);
                     Log.w("convertImage", test2.toString());
                     Toast.makeText(getActivity(), test2.toString(), Toast.LENGTH_SHORT).show();
                 }
