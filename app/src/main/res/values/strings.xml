@@ -24,9 +24,13 @@
     <string name="crop">Crop Image</string>
     <string name="edit">Edit</string>
     <string name="convert">Convert Image</string>
-    <string name="open">Load Image</string>
+    <string name="open_image">Load Image</string>
+    <string name="open_text">Load Text</string>
     <string name="open_local">Load from Local</string>
     <string name="open_cloud">Load from Cloud</string>
     <string name="save">Save Image to Cloud</string>
-    <string name="delete">Delete Image</string>
+    <string name="delete">Delete</string>
+    <string name="spellcheck">Spellcheck</string>
+    <string name="pass">Pass</string>
+    <string name="accept">Accept</string>
 </resources>

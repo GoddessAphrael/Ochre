@@ -21,10 +21,17 @@ import android.provider.MediaStore;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.textservice.SentenceSuggestionsInfo;
+import android.view.textservice.SpellCheckerSession;
+import android.view.textservice.SuggestionsInfo;
+import android.view.textservice.TextInfo;
+import android.view.textservice.TextServicesManager;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -55,6 +62,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     static final protected Integer REQUEST_IMAGE_CAPTURE = 1;
     static final protected Integer RESULT_LOAD_IMG = 2;
+    static final protected Integer RESULT_LOAD_TEXT = 3;
 
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -87,11 +95,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             @Override
             public void onClick(View v)
             {
-                if(MainActivity.this.getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA) == false)
+                if(!MainActivity.this.getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA))
                 {
                     Toast.makeText(MainActivity.this, "Unable to Capture new Image - This device has no Camera",
                             Toast.LENGTH_SHORT).show();
-                    return;
                 }
                 else
                 {
@@ -104,7 +111,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         }
                         catch (IOException e)
                         {
-
+                            Log.w("Fab", "createImageFile:failure");
+                            Toast.makeText(MainActivity.this, "Error Occurred: " + e.getMessage(),
+                                    Toast.LENGTH_SHORT).show();
                         }
                         if (photoFile != null) {
                             Uri photoURI = FileProvider.getUriForFile(MainActivity.this,
@@ -301,9 +310,19 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         startActivityForResult(photoPickerIntent, RESULT_LOAD_IMG);
     }
 
+    public void loadLocalText()
+    {
+        Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+        intent.addCategory(Intent.CATEGORY_OPENABLE);
+        intent.setType("*/*");
+        startActivityForResult(intent, RESULT_LOAD_TEXT);
+    }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data)
     {
+        final String TAG = "onActivityResult";
+
         super.onActivityResult(requestCode, resultCode, data);
 
         final ImageFragment image = new ImageFragment();
@@ -314,28 +333,88 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             {
                 galleryAddPic();
                 NavView.setCheckedItem(R.id.nav_image);
+
+                Bundle bundle = new Bundle();
+                bundle.putString("path", currentPhotoPath);
+                image.setArguments(bundle);
+
+                new Handler().post(new Runnable()
+                {
+                    public void run()
+                    {
+                        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
+                                image).commit();
+                    }
+                });
             }
             else if (requestCode == RESULT_LOAD_IMG)
             {
-                Uri loadImageUri = data.getData();
-                String[] filePath = { MediaStore.Images.Media.DATA };
-                Cursor cursor = getContentResolver().query(loadImageUri, filePath, null, null, null);
-                cursor.moveToFirst();
-                currentPhotoPath = cursor.getString(cursor.getColumnIndex(filePath[0]));
-            }
-
-            Bundle bundle = new Bundle();
-            bundle.putString("path", currentPhotoPath);
-            image.setArguments(bundle);
-
-            new Handler().post(new Runnable()
-            {
-                public void run()
+                try
                 {
-                    getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
-                            image).commit();
+                    Uri loadImageUri = data.getData();
+                    String[] filePath = { MediaStore.Images.Media.DATA };
+                    Cursor cursor = getContentResolver().query(loadImageUri, filePath, null, null, null);
+                    cursor.moveToFirst();
+                    currentPhotoPath = cursor.getString(cursor.getColumnIndex(filePath[0]));
+                    cursor.close();
+
+                    Bundle bundle = new Bundle();
+                    bundle.putString("path", currentPhotoPath);
+                    image.setArguments(bundle);
+
+                    new Handler().post(new Runnable()
+                    {
+                        public void run()
+                        {
+                            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
+                                    image).commit();
+                        }
+                    });
                 }
-            });
+                catch (Exception e)
+                {
+                    Log.w(TAG, "RESULT_LOAD_IMG:failure");
+                    Toast.makeText(MainActivity.this, "Error Occurred: " + e.getMessage(),
+                            Toast.LENGTH_SHORT).show();
+                }
+            }
+            else if (requestCode == RESULT_LOAD_TEXT)
+            {
+                Uri loadTextUri = data.getData();
+                File file = new File(loadTextUri.getPath());
+
+                StringBuilder text = new StringBuilder();
+
+                try
+                {
+                    BufferedReader br = new BufferedReader(new FileReader(file));
+                    String line = br.readLine();
+
+                    text.append(line);
+                    br.close();
+                }
+                catch (IOException e)
+                {
+                    Log.w(TAG, "RESULT_LOAD_TEXT:failure");
+                    Toast.makeText(MainActivity.this, "Error Occurred: " + e.getMessage(),
+                            Toast.LENGTH_SHORT).show();
+                }
+
+                final TextFragment textFragment = new TextFragment();
+
+                Bundle bundle = new Bundle();
+                bundle.putString("text", text.toString());
+                textFragment.setArguments(bundle);
+
+                new Handler().post(new Runnable()
+                {
+                    public void run()
+                    {
+                        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
+                                textFragment).commit();
+                    }
+                });
+            }
         }
     }
 }

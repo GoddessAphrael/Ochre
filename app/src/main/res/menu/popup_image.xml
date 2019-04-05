@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/image_crop"
+            android:checkable="false"
+            android:enabled="true"
+            android:icon="@android:drawable/ic_menu_crop"
+            android:title="@string/crop"
+            android:visible="true" />
+
+        <item
+            android:id="@+id/image_open"
+            android:checkable="false"
+            android:enabled="true"
+            android:icon="@android:drawable/ic_menu_set_as"
+            android:title="@string/open_image"
+            android:visible="true" >
+
+            <menu xmlns:android="http://schemas.android.com/apk/res/android">
+                <group android:checkableBehavior="single">
+                    <item
+                        android:id="@+id/image_open_local"
+                        android:checkable="false"
+                        android:enabled="true"
+                        android:icon="@android:drawable/ic_menu_set_as"
+                        android:title="@string/open_local"
+                        android:visible="true" />
+
+                    <item
+                        android:id="@+id/image_open_cloud"
+                        android:checkable="false"
+                        android:enabled="true"
+                        android:icon="@android:drawable/ic_menu_set_as"
+                        android:title="@string/open_cloud"
+                        android:visible="true" />
+                </group>
+            </menu>
+        </item>
+
+        <item
+            android:id="@+id/image_save"
+            android:checkable="false"
+            android:enabled="true"
+            android:icon="@android:drawable/ic_menu_save"
+            android:title="@string/save"
+            android:visible="true" />
+
+        <item
+            android:id="@+id/image_delete"
+            android:checkable="false"
+            android:enabled="true"
+            android:icon="@android:drawable/ic_menu_delete"
+            android:title="@string/delete"
+            android:visible="true" />
+    </group>
+</menu>

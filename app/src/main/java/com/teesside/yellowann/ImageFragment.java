@@ -125,7 +125,7 @@ public class ImageFragment extends Fragment
             public void onClick(View v)
             {
                 PopupMenu popup = new PopupMenu(getActivity(), editImage);
-                popup.getMenuInflater().inflate(R.menu.popup_menu, popup.getMenu());
+                popup.getMenuInflater().inflate(R.menu.popup_image, popup.getMenu());
 
                 popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener()
                 {
@@ -133,21 +133,21 @@ public class ImageFragment extends Fragment
                     {
                         switch(menuItem.getItemId())
                         {
-                            case R.id.popup_crop:
+                            case R.id.image_crop:
                                 Log.w("editImage", "crop_Image:Pressed");
                                 Toast.makeText(getActivity(), "Unable to Crop: Not Implemented",
                                         Toast.LENGTH_SHORT).show();
                                 break;
-                            case R.id.popup_open_local:
+                            case R.id.image_open_local:
                                 loadLocalImageConfirm();
                                 break;
-                            case R.id.popup_open_cloud:
+                            case R.id.image_open_cloud:
                                 loadCloudImageConfirm();
                                 break;
-                            case R.id.popup_save:
+                            case R.id.image_save:
                                 uploadToCloud();
                                 break;
-                            case R.id.popup_delete:
+                            case R.id.image_delete:
                                 confirmDelete();
                                 break;
                         }
@@ -171,11 +171,18 @@ public class ImageFragment extends Fragment
                 }
                 else
                 {
-                    Python py = Python.getInstance();
-                    PyObject test = py.getModule("SimpleHRT.main").get("main");
-                    PyObject test2 = test.call(currentPhotoPath);
-                    Log.w("convertImage", test2.toString());
-                    Toast.makeText(getActivity(), test2.toString(), Toast.LENGTH_SHORT).show();
+                    if (imageCapture.getDrawable() != null)
+                    {
+                        Python py = Python.getInstance();
+                        PyObject text = (py.getModule("SimpleHRT.main").get("main")).call(currentPhotoPath);
+                        sendToText(text.toString());
+                    }
+                    else
+                    {
+                        Log.w("convertImage", "onClick:failure");
+                        Toast.makeText(getActivity(), "Unable to Convert: No current Image",
+                                Toast.LENGTH_SHORT).show();
+                    }
                 }
             }
         });
@@ -410,9 +417,27 @@ public class ImageFragment extends Fragment
         }
         else
         {
-            Log.w("Popup_Delete", "Popup_Delete:failure");
+            Log.w("confirmDelete", "getDrawable:failure");
             Toast.makeText(getActivity(), "Unable to Delete: No current Image",
                     Toast.LENGTH_SHORT).show();
         }
+    }
+
+    private void sendToText(String text)
+    {
+        final TextFragment textFragment = new TextFragment();
+
+        Bundle bundle = new Bundle();
+        bundle.putString("text", text);
+        textFragment.setArguments(bundle);
+
+        new Handler().post(new Runnable()
+        {
+            public void run()
+            {
+                getFragmentManager().beginTransaction().replace(R.id.fragment_container,
+                        textFragment).commit();
+            }
+        });
     }
 }
