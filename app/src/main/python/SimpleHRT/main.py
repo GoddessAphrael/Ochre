@@ -5,6 +5,8 @@ import sys
 import argparse
 import cv2
 import editdistance
+import tensorflow as tf
+from os.path import dirname, join
 from .DataLoader import DataLoader, Batch
 from .Model import Model, DecoderType
 from .SamplePreprocessor import preprocess
@@ -12,18 +14,18 @@ from .SamplePreprocessor import preprocess
 
 class FilePaths:
 	"filenames and paths to data"
-	fnCharList = '../model/charList.txt'
-	fnAccuracy = '../model/accuracy.txt'
-	fnTrain = '../data/'
-	fnInfer = '../data/test.png'
-	fnCorpus = '../data/corpus.txt'
+	fnCharList = (join(dirname(__file__), "model/charList.txt"))
+	fnAccuracy = (join(dirname(__file__), "model/accuracy.txt"))
+	fnTrain = (join(dirname(__file__), "data"))
+	fnInfer = (join(dirname(__file__), "data/test2.png"))
+	fnCorpus = (join(dirname(__file__), "data/corpus.txt"))
 
 
 def train(model, loader):
 	"train NN"
 	epoch = 0 # number of training epochs since start
-	bestCharErrorRate = float('inf') # best valdiation character error rate
-	noImprovementSince = 0 # number of epochs no improvement of character error rate occured
+	bestCharErrorRate = float('inf') # best validation character error rate
+	noImprovementSince = 0 # number of epochs no improvement of character error rate occurred
 	earlyStopping = 5 # stop training after this number of epochs without improvement
 	while True:
 		epoch += 1
@@ -93,11 +95,13 @@ def infer(model, fnImg):
 	img = preprocess(cv2.imread(fnImg, cv2.IMREAD_GRAYSCALE), Model.imgSize)
 	batch = Batch(None, [img])
 	(recognized, probability) = model.inferBatch(batch, True)
-	print(recognized[0])
+	return recognized[0]
 	#print('Probability:', probability[0])
 
 
-def main():
+def main(fnImg):
+	tf.reset_default_graph()
+
 	"main function"
 	# optional command line args
 	parser = argparse.ArgumentParser()
@@ -113,7 +117,7 @@ def main():
 	elif args.wordbeamsearch:
 		decoderType = DecoderType.WordBeamSearch
 
-	# train or validate on IAM dataset	
+	# train or validate on IAM data-set
 	if args.train or args.validate:
 		# load training data, create TF model
 		loader = DataLoader(FilePaths.fnTrain, Model.batchSize, Model.imgSize, Model.maxTextLen)
@@ -121,7 +125,7 @@ def main():
 		# save characters of model for inference mode
 		open(FilePaths.fnCharList, 'w').write(str().join(loader.charList))
 		
-		# save words contained in dataset into file
+		# save words contained in data-set into file
 		open(FilePaths.fnCorpus, 'w').write(str(' ').join(loader.trainWords + loader.validationWords))
 
 		# execute training or validation
@@ -136,7 +140,7 @@ def main():
 	else:
 		#print(open(FilePaths.fnAccuracy).read())
 		model = Model(open(FilePaths.fnCharList).read(), decoderType, mustRestore=True)
-		infer(model, FilePaths.fnInfer)
+		return infer(model, fnImg)
 
 
 if __name__ == '__main__':

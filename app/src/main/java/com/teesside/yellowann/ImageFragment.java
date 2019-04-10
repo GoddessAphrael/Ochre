@@ -112,11 +112,13 @@ public class ImageFragment extends Fragment
             @Override
             public void onClick(View v)
             {
+                Log.w("FavouriteStar", "FavouriteStar:Pressed");
                 Toast.makeText(getActivity(), "Unable to Favourite: Not Implemented",
                         Toast.LENGTH_SHORT).show();
             }
         });
 
+        // initiate popup-menu
         editImage.setOnClickListener(new View.OnClickListener()
         {
             @SuppressLint("RestrictedApi")
@@ -124,7 +126,7 @@ public class ImageFragment extends Fragment
             public void onClick(View v)
             {
                 PopupMenu popup = new PopupMenu(getActivity(), editImage);
-                popup.getMenuInflater().inflate(R.menu.popup_menu, popup.getMenu());
+                popup.getMenuInflater().inflate(R.menu.popup_image, popup.getMenu());
 
                 popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener()
                 {
@@ -132,20 +134,21 @@ public class ImageFragment extends Fragment
                     {
                         switch(menuItem.getItemId())
                         {
-                            case R.id.popup_crop:
+                            case R.id.image_crop:
+                                Log.w("editImage", "crop_Image:Pressed");
                                 Toast.makeText(getActivity(), "Unable to Crop: Not Implemented",
                                         Toast.LENGTH_SHORT).show();
                                 break;
-                            case R.id.popup_open_local:
+                            case R.id.image_open_local:
                                 loadLocalImageConfirm();
                                 break;
-                            case R.id.popup_open_cloud:
+                            case R.id.image_open_cloud:
                                 loadCloudImageConfirm();
                                 break;
-                            case R.id.popup_save:
+                            case R.id.image_save:
                                 uploadToCloud();
                                 break;
-                            case R.id.popup_delete:
+                            case R.id.image_delete:
                                 confirmDelete();
                                 break;
                         }
@@ -158,6 +161,7 @@ public class ImageFragment extends Fragment
             }
         });
 
+        // initiate Python if need, else run Neural Network on current image
         convertImage.setOnClickListener(new View.OnClickListener()
         {
             @Override
@@ -169,10 +173,18 @@ public class ImageFragment extends Fragment
                 }
                 else
                 {
-                    Python py = Python.getInstance();
-                    PyObject test = py.getModule("SimpleHRT.main");
-                    Log.d("convertImage", test.toString());
-                    Toast.makeText(getActivity(), test.toString(), Toast.LENGTH_SHORT).show();
+                    if (imageCapture.getDrawable() != null)
+                    {
+                        Python py = Python.getInstance();
+                        PyObject text = (py.getModule("SimpleHRT.main").get("main")).call(currentPhotoPath);
+                        sendToText(text.toString());
+                    }
+                    else
+                    {
+                        Log.w("convertImage", "onClick:failure");
+                        Toast.makeText(getActivity(), "Unable to Convert: No current Image",
+                                Toast.LENGTH_SHORT).show();
+                    }
                 }
             }
         });
@@ -197,6 +209,7 @@ public class ImageFragment extends Fragment
         });
     }
 
+    // add bitmap to imageView
     private void setPic()
     {
         BitmapFactory.Options bmOptions = new BitmapFactory.Options();
@@ -214,6 +227,7 @@ public class ImageFragment extends Fragment
         imageCapture.setImageBitmap(bitmap);
     }
 
+    // dialog confirm local load
     private void loadLocalImageConfirm()
     {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity())
@@ -241,6 +255,7 @@ public class ImageFragment extends Fragment
         dialog.show();
     }
 
+    // dialog confirm cloud load
     private void loadCloudImageConfirm()
     {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity())
@@ -268,6 +283,7 @@ public class ImageFragment extends Fragment
         dialog.show();
     }
 
+    // initialise LoadFragment with populated list of available cloud images
     private void getImagesList()
     {
         try
@@ -294,6 +310,7 @@ public class ImageFragment extends Fragment
         }
     }
 
+    // commit image to firebase
     private void uploadToCloud()
     {
         final String TAG = "uploadToCloud.uploadTask";
@@ -372,13 +389,14 @@ public class ImageFragment extends Fragment
         }
     }
 
+    // dialog confirm local delete
     private void confirmDelete()
     {
         if (imageCapture.getDrawable() != null)
         {
 
             AlertDialog.Builder builder = new AlertDialog.Builder(getActivity())
-                    .setCancelable(true).setTitle("Delete").setMessage("Are you sure you want to delete this image?");
+                    .setCancelable(true).setTitle("Delete").setMessage("Are you sure you want to delete this local image?");
 
             builder.setPositiveButton(R.string.delete, new DialogInterface.OnClickListener()
             {
@@ -407,9 +425,28 @@ public class ImageFragment extends Fragment
         }
         else
         {
-            Log.w("Popup_Delete", "Popup_Delete:failure");
+            Log.w("confirmDelete", "getDrawable:failure");
             Toast.makeText(getActivity(), "Unable to Delete: No current Image",
                     Toast.LENGTH_SHORT).show();
         }
+    }
+
+    // initiate textFragment
+    private void sendToText(String text)
+    {
+        final TextFragment textFragment = new TextFragment();
+
+        Bundle bundle = new Bundle();
+        bundle.putString("text", text);
+        textFragment.setArguments(bundle);
+
+        new Handler().post(new Runnable()
+        {
+            public void run()
+            {
+                getFragmentManager().beginTransaction().replace(R.id.fragment_container,
+                        textFragment).commit();
+            }
+        });
     }
 }

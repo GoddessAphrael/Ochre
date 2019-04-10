@@ -8,18 +8,75 @@
 
     <TextView
         android:id="@+id/new_text"
-        android:layout_width="384dp"
-        android:layout_height="512dp"
+        android:layout_width="382dp"
+        android:layout_height="442dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
-        android:contentDescription="@string/text"
-        android:visibility="visible"
         android:autofillHints="false"
+        android:contentDescription="@string/text"
+        android:gravity="center_vertical"
+        android:textAlignment="textStart"
+        android:textSize="20sp"
+        android:visibility="visible"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.481"
+        app:layout_constraintHorizontal_bias="0.461"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <EditText
+        android:id="@+id/edit_new_text"
+        android:layout_width="382dp"
+        android:layout_height="442dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:autoSizeTextType="uniform"
+        android:autofillHints="false"
+        android:contentDescription="@string/text"
+        android:gravity="center"
+        android:visibility="invisible"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.461"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/spellcheck_suggestion_1"
+        android:layout_width="120dp"
+        android:layout_height="30dp"
+        android:layout_marginStart="14dp"
+        android:contentDescription="@string/spellcheck"
+        android:textAlignment="center"
+        android:textSize="24sp"
+        android:visibility="visible"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/spellcheck_pass" />
+
+
+    <TextView
+        android:id="@+id/spellcheck_suggestion_2"
+        android:layout_width="120dp"
+        android:layout_height="30dp"
+        android:layout_marginStart="11dp"
+        android:contentDescription="@string/spellcheck"
+        android:textAlignment="center"
+        android:textSize="24sp"
+        android:visibility="visible"
+        app:layout_constraintStart_toEndOf="@+id/spellcheck_suggestion_1"
+        app:layout_constraintTop_toBottomOf="@+id/spellcheck_pass" />
+
+    <TextView
+        android:id="@+id/spellcheck_suggestion_3"
+        android:layout_width="120dp"
+        android:layout_height="30dp"
+        android:layout_marginStart="11dp"
+        android:contentDescription="@string/spellcheck"
+        android:textAlignment="center"
+        android:textSize="24sp"
+        android:visibility="visible"
+        app:layout_constraintStart_toEndOf="@+id/spellcheck_suggestion_2"
+        app:layout_constraintTop_toBottomOf="@+id/spellcheck_pass" />
 
     <ProgressBar
         android:id="@+id/uploadProgress_text"
@@ -49,7 +106,7 @@
         app:layout_constraintEnd_toStartOf="@+id/analyze_text"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/new_text"
+        app:layout_constraintTop_toBottomOf="@+id/spellcheck_suggestion_1"
         app:srcCompat="@android:drawable/ic_menu_edit" />
 
     <ImageButton
@@ -66,8 +123,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.988"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/new_text"
-        app:layout_constraintVertical_bias="0.503"
+        app:layout_constraintTop_toBottomOf="@+id/spellcheck_suggestion_1"
         app:srcCompat="@android:drawable/ic_menu_sort_alphabetically" />
 
     <CheckBox
@@ -82,5 +138,57 @@
         app:layout_constraintStart_toStartOf="@+id/new_text"
         app:layout_constraintTop_toTopOf="@+id/new_text"
         app:layout_constraintVertical_bias="0.0" />
+
+    <Button
+        android:id="@+id/spellcheck_pass"
+        android:layout_width="191dp"
+        android:layout_height="40dp"
+        android:layout_marginStart="14dp"
+        android:layout_marginTop="10dp"
+        android:text="@string/pass"
+        android:textAlignment="center"
+        android:textSize="12sp"
+        android:visibility="invisible"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/uploadProgress_text" />
+
+    <Button
+        android:id="@+id/edit_accept"
+        android:layout_width="191dp"
+        android:layout_height="40dp"
+        android:layout_marginStart="14dp"
+        android:layout_marginTop="10dp"
+        android:text="@string/accept"
+        android:textAlignment="center"
+        android:textSize="12sp"
+        android:visibility="invisible"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/uploadProgress_text" />
+
+    <Button
+        android:id="@+id/spellcheck_cancel"
+        android:layout_width="191dp"
+        android:layout_height="40dp"
+        android:layout_marginStart="1dp"
+        android:layout_marginTop="10dp"
+        android:text="@string/cancel"
+        android:textAlignment="center"
+        android:textSize="12sp"
+        android:visibility="invisible"
+        app:layout_constraintStart_toEndOf="@+id/spellcheck_pass"
+        app:layout_constraintTop_toBottomOf="@+id/uploadProgress_text" />
+
+    <Button
+        android:id="@+id/edit_cancel"
+        android:layout_width="191dp"
+        android:layout_height="40dp"
+        android:layout_marginStart="1dp"
+        android:layout_marginTop="10dp"
+        android:text="@string/cancel"
+        android:textAlignment="center"
+        android:textSize="12sp"
+        android:visibility="invisible"
+        app:layout_constraintStart_toEndOf="@+id/spellcheck_pass"
+        app:layout_constraintTop_toBottomOf="@+id/uploadProgress_text" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

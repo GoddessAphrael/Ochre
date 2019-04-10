@@ -4,6 +4,7 @@ from __future__ import print_function
 import sys
 import numpy as np
 import tensorflow as tf
+from os.path import dirname, join
 
 
 class DecoderType:
@@ -76,11 +77,13 @@ class Model:
 		rnnIn3d = tf.squeeze(self.cnnOut4d, axis=[2])
 
 		# basic cells which is used to build RNN
+		# tf.nn.rnn_cell.LSTMCell
+		# tf.contrib.rnn.LSTMCell
 		numHidden = 256
-		cells = [tf.contrib.rnn.LSTMCell(num_units=numHidden, state_is_tuple=True) for _ in range(2)] # 2 layers
+		cells = [tf.nn.rnn_cell.LSTMCell(num_units=numHidden, state_is_tuple=True) for _ in range(2)] # 2 layers
 
 		# stack basic cells
-		stacked = tf.contrib.rnn.MultiRNNCell(cells, state_is_tuple=True)
+		stacked = tf.nn.rnn_cell.MultiRNNCell(cells, state_is_tuple=True)
 
 		# bidirectional RNN
 		# BxTxF -> BxTx2H
@@ -135,7 +138,7 @@ class Model:
 		sess=tf.Session() # TF session
 
 		saver = tf.train.Saver(max_to_keep=1) # saver saves model to file
-		modelDir = '../model/'
+		modelDir = (join(dirname(__file__), "model/"))
 		latestSnapshot = tf.train.latest_checkpoint(modelDir) # is there a saved model?
 
 		# if model must be restored (for inference), there must be a snapshot

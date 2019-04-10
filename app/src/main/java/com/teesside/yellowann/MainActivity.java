@@ -10,10 +10,7 @@ import android.os.Bundle;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
 
 import android.os.Environment;
 import android.os.Handler;
@@ -24,10 +21,11 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
 
@@ -43,30 +41,31 @@ import static android.os.Environment.getExternalStoragePublicDirectory;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener
 {
-    private DrawerLayout Drawer;
-    private NavigationView NavView;
+    private DrawerLayout drawer;
+    private NavigationView navView;
     private Toolbar toolbar;
     private ActionBarDrawerToggle drawerToggle;
-    private TextView UserAccount, UserLogout;
-    private FloatingActionButton Fab;
+    private TextView userAccount, userLogout;
+    private FloatingActionButton fab;
     private FirebaseAuth mAuth;
     private FirebaseStorage mStorage;
     private String currentPhotoPath;
 
     static final protected Integer REQUEST_IMAGE_CAPTURE = 1;
     static final protected Integer RESULT_LOAD_IMG = 2;
+    static final protected Integer RESULT_LOAD_TEXT = 3;
 
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Drawer = findViewById(R.id.drawer_layout);
-        NavView = findViewById(R.id.navigation_view);
+        drawer = findViewById(R.id.drawer_layout);
+        navView = findViewById(R.id.navigation_view);
         toolbar = findViewById(R.id.toolbar);
-        Fab = findViewById(R.id.fab);
-        UserAccount = findViewById(R.id.account);
-        UserLogout = findViewById(R.id.logout);
+        fab = findViewById(R.id.fab);
+        userAccount = findViewById(R.id.account);
+        userLogout = findViewById(R.id.logout);
 
         mAuth = FirebaseAuth.getInstance();
         mStorage = FirebaseStorage.getInstance();
@@ -74,24 +73,24 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle(R.string.home);
 
-        drawerToggle = new ActionBarDrawerToggle(MainActivity.this, Drawer, toolbar,
+        drawerToggle = new ActionBarDrawerToggle(MainActivity.this, drawer, toolbar,
                 R.string.drawer_open, R.string.drawer_close);
         drawerToggle.syncState();
 
-        Drawer.addDrawerListener(drawerToggle);
+        drawer.addDrawerListener(drawerToggle);
 
-        NavView.setNavigationItemSelectedListener(MainActivity.this);
+        navView.setNavigationItemSelectedListener(MainActivity.this);
 
-        Fab.setOnClickListener(new View.OnClickListener()
+        // if device has camera, create temporary file and take photo
+        fab.setOnClickListener(new View.OnClickListener()
         {
             @Override
             public void onClick(View v)
             {
-                if(MainActivity.this.getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA) == false)
+                if(!MainActivity.this.getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA))
                 {
                     Toast.makeText(MainActivity.this, "Unable to Capture new Image - This device has no Camera",
                             Toast.LENGTH_SHORT).show();
-                    return;
                 }
                 else
                 {
@@ -104,7 +103,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         }
                         catch (IOException e)
                         {
-
+                            Log.w("Fab", "createImageFile:failure");
+                            Toast.makeText(MainActivity.this, "Error Occurred: " + e.getMessage(),
+                                    Toast.LENGTH_SHORT).show();
                         }
                         if (photoFile != null) {
                             Uri photoURI = FileProvider.getUriForFile(MainActivity.this,
@@ -117,7 +118,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             }
         });
 
-        UserAccount.setOnClickListener(new View.OnClickListener()
+        userAccount.setOnClickListener(new View.OnClickListener()
         {
             @Override
             public void onClick(View v)
@@ -126,7 +127,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             }
         });
 
-        UserLogout.setOnClickListener(new View.OnClickListener()
+        // dialog confirm user logout
+        userLogout.setOnClickListener(new View.OnClickListener()
         {
             @Override
             public void onClick(View v)
@@ -174,6 +176,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
     }
 
+    // initiate new fragments
     @Override
     public boolean onNavigationItemSelected(MenuItem menuItem)
     {
@@ -230,16 +233,17 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 });
                 break;
         }
-        Drawer.closeDrawer(GravityCompat.START);
+        drawer.closeDrawer(GravityCompat.START);
         return true;
     }
 
+    // alter back button to close nav drawer if open
     @Override
     public void onBackPressed()
     {
-        if (Drawer.isDrawerOpen(GravityCompat.START))
+        if (drawer.isDrawerOpen(GravityCompat.START))
         {
-            Drawer.closeDrawer(GravityCompat.START);
+            drawer.closeDrawer(GravityCompat.START);
         }
         else
         {
@@ -257,6 +261,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         return super.onOptionsItemSelected(item);
     }
 
+    // initiate ResetPasswordFragment
     private void sendToPasswordReset(View v)
     {
         final ResetPasswordFragment reset = new ResetPasswordFragment();
@@ -272,9 +277,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                        reset).addToBackStack(null).commit();
            }
        });
-        Drawer.closeDrawer(GravityCompat.START);
+        drawer.closeDrawer(GravityCompat.START);
     }
 
+    // create temporary file and record image path
     public File createImageFile() throws IOException
     {
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.UK).format(new Date());
@@ -286,6 +292,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         return image;
     }
 
+    // save image to local
     private void galleryAddPic()
     {
         Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
@@ -295,47 +302,114 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         this.sendBroadcast(mediaScanIntent);
     }
 
+    // load image from local
     public void loadLocalImage()
     {
         Intent photoPickerIntent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
         startActivityForResult(photoPickerIntent, RESULT_LOAD_IMG);
     }
 
+    // load text from local
+    public void loadLocalText()
+    {
+        Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+        intent.addCategory(Intent.CATEGORY_OPENABLE);
+        intent.setType("*/*");
+        startActivityForResult(intent, RESULT_LOAD_TEXT);
+    }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data)
     {
-        super.onActivityResult(requestCode, resultCode, data);
+        final String TAG = "onActivityResult";
 
-        final ImageFragment image = new ImageFragment();
+        super.onActivityResult(requestCode, resultCode, data);
 
         if (resultCode == RESULT_OK)
         {
+            // initiate imageFragment with new photo
             if (requestCode== REQUEST_IMAGE_CAPTURE)
             {
+                final ImageFragment image = new ImageFragment();
                 galleryAddPic();
-                NavView.setCheckedItem(R.id.nav_image);
+                navView.setCheckedItem(R.id.nav_image);
+
+                Bundle bundle = new Bundle();
+                bundle.putString("path", currentPhotoPath);
+                image.setArguments(bundle);
+
+                new Handler().post(new Runnable()
+                {
+                    public void run()
+                    {
+                        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
+                                image).commit();
+                    }
+                });
             }
+            // initiate imageFragment with loaded image
             else if (requestCode == RESULT_LOAD_IMG)
             {
-                Uri loadImageUri = data.getData();
-                String[] filePath = { MediaStore.Images.Media.DATA };
-                Cursor cursor = getContentResolver().query(loadImageUri, filePath, null, null, null);
-                cursor.moveToFirst();
-                currentPhotoPath = cursor.getString(cursor.getColumnIndex(filePath[0]));
+                final ImageFragment image = new ImageFragment();
+
+                    Uri loadImageUri = data.getData();
+                    String[] filePath = { MediaStore.Images.Media.DATA };
+                    Cursor cursor = getContentResolver().query(loadImageUri, filePath, null, null, null);
+                    cursor.moveToFirst();
+                    currentPhotoPath = cursor.getString(cursor.getColumnIndex(filePath[0]));
+                    cursor.close();
+
+                    Bundle bundle = new Bundle();
+                    bundle.putString("path", currentPhotoPath);
+                    image.setArguments(bundle);
+
+                    new Handler().post(new Runnable()
+                    {
+                        public void run()
+                        {
+                            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
+                                    image).commit();
+                        }
+                    });
             }
-
-            Bundle bundle = new Bundle();
-            bundle.putString("path", currentPhotoPath);
-            image.setArguments(bundle);
-
-            new Handler().post(new Runnable()
+            // initiate textFragment with loaded text
+            else if (requestCode == RESULT_LOAD_TEXT)
             {
-                public void run()
+                Uri loadTextUri = data.getData();
+                File file = new File(loadTextUri.getPath());
+
+                StringBuilder text = new StringBuilder();
+
+                try
                 {
-                    getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
-                            image).commit();
+                    BufferedReader br = new BufferedReader(new FileReader(file));
+                    String line = br.readLine();
+
+                    text.append(line);
+                    br.close();
                 }
-            });
+                catch (IOException e)
+                {
+                    Log.w(TAG, "RESULT_LOAD_TEXT:failure");
+                    Toast.makeText(MainActivity.this, "Error Occurred: " + e.getMessage(),
+                            Toast.LENGTH_SHORT).show();
+                }
+
+                final TextFragment textFragment = new TextFragment();
+
+                Bundle bundle = new Bundle();
+                bundle.putString("text", text.toString());
+                textFragment.setArguments(bundle);
+
+                new Handler().post(new Runnable()
+                {
+                    public void run()
+                    {
+                        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
+                                textFragment).commit();
+                    }
+                });
+            }
         }
     }
 }

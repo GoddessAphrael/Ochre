@@ -2,25 +2,33 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <group android:checkableBehavior="single">
         <item
-            android:id="@+id/popup_crop"
+            android:id="@+id/text_edit"
             android:checkable="false"
             android:enabled="true"
-            android:icon="@android:drawable/ic_menu_crop"
-            android:title="@string/crop"
+            android:icon="@android:drawable/ic_menu_edit"
+            android:title="@string/edit"
             android:visible="true" />
 
         <item
-            android:id="@+id/popup_open"
+            android:id="@+id/text_spellcheck"
+            android:checkable="false"
+            android:enabled="true"
+            android:icon="@android:drawable/ic_menu_sort_alphabetically"
+            android:title="@string/spellcheck"
+            android:visible="true" />
+
+        <item
+            android:id="@+id/text_open"
             android:checkable="false"
             android:enabled="true"
             android:icon="@android:drawable/ic_menu_set_as"
-            android:title="@string/open"
-            android:visible="true" >
+            android:title="@string/open_text"
+            android:visible="true">
 
             <menu xmlns:android="http://schemas.android.com/apk/res/android">
                 <group android:checkableBehavior="single">
                     <item
-                        android:id="@+id/popup_open_local"
+                        android:id="@+id/text_open_local"
                         android:checkable="false"
                         android:enabled="true"
                         android:icon="@android:drawable/ic_menu_set_as"
@@ -28,7 +36,7 @@
                         android:visible="true" />
 
                     <item
-                        android:id="@+id/popup_open_cloud"
+                        android:id="@+id/text_open_cloud"
                         android:checkable="false"
                         android:enabled="true"
                         android:icon="@android:drawable/ic_menu_set_as"
@@ -39,7 +47,7 @@
         </item>
 
         <item
-            android:id="@+id/popup_save"
+            android:id="@+id/text_save"
             android:checkable="false"
             android:enabled="true"
             android:icon="@android:drawable/ic_menu_save"
@@ -47,7 +55,7 @@
             android:visible="true" />
 
         <item
-            android:id="@+id/popup_delete"
+            android:id="@+id/text_delete"
             android:checkable="false"
             android:enabled="true"
             android:icon="@android:drawable/ic_menu_delete"
