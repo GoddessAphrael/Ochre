@@ -26,10 +26,10 @@ import androidx.fragment.app.Fragment;
 
 public class LoginFragment extends Fragment
 {
-    private Button Register, Login;
-    private EditText UserEmail, UserPassword;
+    private Button register, login;
+    private EditText userEmail, userPassword;
     private FirebaseAuth mAuth;
-    private TextView PasswordReset;
+    private TextView passwordReset;
 
     @Override
     public void onCreate(Bundle savedInstanceState)
@@ -50,19 +50,19 @@ public class LoginFragment extends Fragment
 
         mAuth = FirebaseAuth.getInstance();
 
-        UserEmail = v.findViewById(R.id.EmailEntry);
-        UserPassword = v.findViewById(R.id.PasswordEntry);
-        Login = v.findViewById(R.id.LoginButton);
-        Register = v.findViewById(R.id.RegisterButton);
-        PasswordReset = v.findViewById((R.id.PasswordRecovery));
+        userEmail = v.findViewById(R.id.EmailEntry);
+        userPassword = v.findViewById(R.id.PasswordEntry);
+        login = v.findViewById(R.id.LoginButton);
+        register = v.findViewById(R.id.RegisterButton);
+        passwordReset = v.findViewById((R.id.PasswordRecovery));
 
-        Register.setOnClickListener(new View.OnClickListener()
+        register.setOnClickListener(new View.OnClickListener()
         {
             @Override
             public void onClick(View v)
             {
-                String email = UserEmail.getText().toString();
-                String password = UserPassword.getText().toString();
+                String email = userEmail.getText().toString();
+                String password = userPassword.getText().toString();
 
                 boolean valid = validate(email, password);
 
@@ -78,19 +78,19 @@ public class LoginFragment extends Fragment
             }
         });
 
-        Login.setOnClickListener(new View.OnClickListener()
+        login.setOnClickListener(new View.OnClickListener()
         {
             @Override
             public void onClick(View v)
             {
-                String email = UserEmail.getText().toString();
-                String password = UserPassword.getText().toString();
+                String email = userEmail.getText().toString();
+                String password = userPassword.getText().toString();
 
                 userLogin(email, password);
             }
         });
 
-        PasswordReset.setOnClickListener(new View.OnClickListener()
+        passwordReset.setOnClickListener(new View.OnClickListener()
         {
             @Override
             public void onClick(View v)
@@ -100,6 +100,7 @@ public class LoginFragment extends Fragment
         });
     }
 
+    // register new user with firebase
     private void userRegister(String email, String password)
     {
         mAuth.createUserWithEmailAndPassword(email, password)
@@ -108,6 +109,7 @@ public class LoginFragment extends Fragment
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task)
                     {
+                        // if successful, send email verification
                         String TAG = "LoginActivity.userRegister";
                         if (task.isSuccessful())
                         {
@@ -130,15 +132,9 @@ public class LoginFragment extends Fragment
                                             else
                                             {
                                                 Log.w(TAG, "sendEmailVerification:failure", task.getException());
-                                                try
-                                                {
-                                                    Toast.makeText(getActivity(),"Unable to Verify: "
-                                                            + task.getException().getMessage(),Toast.LENGTH_SHORT).show();
-                                                }
-                                                catch (NullPointerException e)
-                                                {
+                                                Toast.makeText(getActivity(),"Unable to Verify: "
+                                                        + task.getException().getMessage(),Toast.LENGTH_SHORT).show();
 
-                                                }
                                             }
                                         }
                                     });
@@ -146,25 +142,20 @@ public class LoginFragment extends Fragment
                         else
                         {
                             Log.w(TAG, "createUserWithEmailAndPassword:failure", task.getException());
-                            try
-                            {
-                                Toast.makeText(getActivity(), "Unable to Register: "
-                                        + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
-                            }
-                            catch (NullPointerException e)
-                            {
-
-                            }
+                            Toast.makeText(getActivity(), "Unable to Register: "
+                                    + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
                         }
                     }
                 });
     }
 
+    // validate format
     private boolean isEmailValid(CharSequence email)
     {
         return android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches();
     }
 
+    // validate format
     private boolean isPasswordValid(String password)
     {
         Pattern PASSWORD_PATTERN = Pattern.compile("((?=.*[a-z])(?=.*\\d)(?=.*[A-Z])(?=.*[!£$%^&*#@?+=_:;,.<>()']).{8,16})");
@@ -176,11 +167,13 @@ public class LoginFragment extends Fragment
     {
         String TAG = "LoginActivity.validate";
 
+        // validate foo is not null
         if(TextUtils.isEmpty(email))
         {
             Log.w(TAG, "emailIsEmpty:failure");
             Toast.makeText(getActivity(),"Please enter Email",Toast.LENGTH_SHORT).show();
         }
+        // validate bar is not null
         else if (TextUtils.isEmpty(password))
         {
             Log.w(TAG, "passwordIsEmpty:failure");
@@ -188,18 +181,25 @@ public class LoginFragment extends Fragment
         }
         else
         {
+            // validate foo format
             boolean temp = isEmailValid(email);
 
-            if (temp) {
+            if (temp)
+            {
                 Log.d(TAG, "isEmailValid:success");
+
+                // validate bar format
                 temp = isPasswordValid(password);
 
-                if (!temp) {
+                if (!temp)
+                {
                     Log.w(TAG, "isPasswordValid:failure");
                     Toast.makeText(getActivity(), "Invalid Password - Password must be 8 to 16 characters, " +
                             "contain one lower case character, one upper case character and one symbol", Toast.LENGTH_SHORT).show();
                 }
-            } else {
+            }
+            else
+             {
                 Log.w(TAG, "isEmailValid:failure");
                 Toast.makeText(getActivity(), "Invalid Email Format - Please Check and Retry", Toast.LENGTH_SHORT).show();
             }
@@ -211,39 +211,44 @@ public class LoginFragment extends Fragment
     private void userLogin(String email, String password)
     {
         String TAG = "LoginActivity.userLogin";
+        // validate foo is not null
         if(TextUtils.isEmpty(email))
         {
             Log.w(TAG, "emailIsEmpty:failure");
             Toast.makeText(getActivity(),"Please enter Email",Toast.LENGTH_SHORT).show();
         }
+        // validate bar not null
         else if (TextUtils.isEmpty(password))
         {
             Log.w(TAG, "passwordIsEmpty:failure");
             Toast.makeText(getActivity(),"Please enter Password",Toast.LENGTH_SHORT).show();
         }
-        else {
+        else
+        {
             mAuth.signInWithEmailAndPassword(email, password)
-                    .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                    .addOnCompleteListener(new OnCompleteListener<AuthResult>()
+                    {
                         @Override
-                        public void onComplete(@NonNull Task<AuthResult> task) {
+                        public void onComplete(@NonNull Task<AuthResult> task)
+                        {
                             String TAG = "LoginActivity.userLogin";
-                            if (task.isSuccessful()) {
+                            if (task.isSuccessful())
+                            {
                                 Log.d(TAG, "signInWithEmailAndPassword:success");
                                 sendToMain();
-                            } else {
+                            }
+                            else
+                            {
                                 Log.w(TAG, "signInWithEmailAndPassword:failure", task.getException());
-                                try {
-                                    Toast.makeText(getActivity(), "Unable to Login: "
-                                            + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
-                                } catch (NullPointerException e) {
-
-                                }
+                                Toast.makeText(getActivity(), "Unable to Login: "
+                                        + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
                             }
                         }
                     });
         }
     }
 
+    // initiate MainActivity
     private void sendToMain()
     {
         Intent mainIntent = new Intent(getActivity(), MainActivity.class);
@@ -252,12 +257,13 @@ public class LoginFragment extends Fragment
         getActivity().finish();
     }
 
+    // initiate ResetPasswordFragment
     private void sendToPasswordReset(View v)
     {
         ResetPasswordFragment reset = new ResetPasswordFragment();
 
         Bundle bundle = new Bundle();
-        bundle.putString("email", UserEmail.getText().toString());
+        bundle.putString("email", userEmail.getText().toString());
         reset.setArguments(bundle);
 
         getFragmentManager().beginTransaction().replace(R.id.login_fragment_container,

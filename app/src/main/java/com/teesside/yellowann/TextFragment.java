@@ -1,12 +1,11 @@
 package com.teesside.yellowann;
 
 import android.annotation.SuppressLint;
-import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -24,16 +23,10 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.tasks.Continuation;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageMetadata;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
@@ -43,7 +36,6 @@ import org.apache.commons.io.FilenameUtils;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -51,7 +43,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -62,7 +53,6 @@ import androidx.appcompat.widget.PopupMenu;
 import androidx.fragment.app.Fragment;
 
 import static android.content.Context.TEXT_SERVICES_MANAGER_SERVICE;
-import static android.os.Environment.getExternalStoragePublicDirectory;
 
 public class TextFragment extends Fragment implements SpellCheckerSession.SpellCheckerSessionListener
 {
@@ -141,6 +131,7 @@ public class TextFragment extends Fragment implements SpellCheckerSession.SpellC
             }
         });
 
+        // initiate popup-menu
         editText.setOnClickListener(new View.OnClickListener()
         {
             @SuppressLint("RestrictedApi")
@@ -200,6 +191,7 @@ public class TextFragment extends Fragment implements SpellCheckerSession.SpellC
             }
         });
 
+        // save current text state and set open editText
         editAccept.setOnClickListener(new View.OnClickListener()
         {
             @Override
@@ -214,6 +206,7 @@ public class TextFragment extends Fragment implements SpellCheckerSession.SpellC
             }
         });
 
+        // return text to previous text state
         editCancel.setOnClickListener(new View.OnClickListener()
         {
             @Override
@@ -225,17 +218,24 @@ public class TextFragment extends Fragment implements SpellCheckerSession.SpellC
             }
         });
 
+        // initialise analysisFragment
         analyzeText.setOnClickListener(new View.OnClickListener()
         {
             @Override
             public void onClick(View v)
             {
-                Log.w("analyzeText", "analyzeText:Pressed");
-                Toast.makeText(getActivity(), "Unable to Analyze: Not Implemented",
-                        Toast.LENGTH_SHORT).show();
+                new Handler().post(new Runnable()
+                {
+                    public void run()
+                    {
+                        getFragmentManager().beginTransaction().replace(R.id.fragment_container,
+                                new AnalysisFragment()).commit();
+                    }
+                });
             }
         });
 
+        // skip current spellcheck options
         spellPass.setOnClickListener(new View.OnClickListener()
         {
             @Override
@@ -245,6 +245,7 @@ public class TextFragment extends Fragment implements SpellCheckerSession.SpellC
             }
         });
 
+        // cancel current spellcheck
         spellCancel.setOnClickListener(new View.OnClickListener()
         {
             @Override
@@ -261,6 +262,7 @@ public class TextFragment extends Fragment implements SpellCheckerSession.SpellC
             }
         });
 
+        // set text1 for current spellcheck suggestion
         suggestion1.setOnClickListener(new View.OnClickListener()
         {
             @Override
@@ -274,6 +276,7 @@ public class TextFragment extends Fragment implements SpellCheckerSession.SpellC
             }
         });
 
+        // set text2 for current spellcheck suggestion
         suggestion2.setOnClickListener(new View.OnClickListener()
         {
             @Override
@@ -287,6 +290,7 @@ public class TextFragment extends Fragment implements SpellCheckerSession.SpellC
             }
         });
 
+        // set text3 for current spellcheck suggestion
         suggestion3.setOnClickListener(new View.OnClickListener()
         {
             @Override
@@ -307,6 +311,7 @@ public class TextFragment extends Fragment implements SpellCheckerSession.SpellC
 
     }
 
+    // spellcheck suggestions for current text
     @Override
     public void onGetSentenceSuggestions(SentenceSuggestionsInfo[] results)
     {
@@ -364,6 +369,7 @@ public class TextFragment extends Fragment implements SpellCheckerSession.SpellC
         }
     }
 
+    // initiate new spellcheck session
     private void fetchSuggestionsFor(String input)
     {
         tsm = (TextServicesManager) getActivity().getSystemService(TEXT_SERVICES_MANAGER_SERVICE);
@@ -376,6 +382,7 @@ public class TextFragment extends Fragment implements SpellCheckerSession.SpellC
         );
     }
 
+    // if more words in current text, fetch next suggestion, else save text and display
     private void checkSpell(List<String> spellCheck, int size)
     {
         if (counter < size)
@@ -395,6 +402,7 @@ public class TextFragment extends Fragment implements SpellCheckerSession.SpellC
         }
     }
 
+    // show suggestions for current word
     private void check()
     {
         StringBuilder newText = new StringBuilder();
@@ -408,6 +416,7 @@ public class TextFragment extends Fragment implements SpellCheckerSession.SpellC
         checkSpell(spellCheck, size);
     }
 
+    // create directory if need, else save text to local
     private void documentsAddText()
     {
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.UK).format(new Date());
@@ -434,6 +443,7 @@ public class TextFragment extends Fragment implements SpellCheckerSession.SpellC
         }
     }
 
+    // save text to cloud
     private void uploadToCloud()
     {
         final File f = new File(currentTextPath);
@@ -444,6 +454,7 @@ public class TextFragment extends Fragment implements SpellCheckerSession.SpellC
 
     }
 
+    // dialog confirm local load
     private void loadLocalTextConfirm()
     {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity())

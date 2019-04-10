@@ -118,6 +118,7 @@ public class ImageFragment extends Fragment
             }
         });
 
+        // initiate popup-menu
         editImage.setOnClickListener(new View.OnClickListener()
         {
             @SuppressLint("RestrictedApi")
@@ -160,6 +161,7 @@ public class ImageFragment extends Fragment
             }
         });
 
+        // initiate Python if need, else run Neural Network on current image
         convertImage.setOnClickListener(new View.OnClickListener()
         {
             @Override
@@ -207,6 +209,7 @@ public class ImageFragment extends Fragment
         });
     }
 
+    // add bitmap to imageView
     private void setPic()
     {
         BitmapFactory.Options bmOptions = new BitmapFactory.Options();
@@ -224,6 +227,7 @@ public class ImageFragment extends Fragment
         imageCapture.setImageBitmap(bitmap);
     }
 
+    // dialog confirm local load
     private void loadLocalImageConfirm()
     {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity())
@@ -251,6 +255,7 @@ public class ImageFragment extends Fragment
         dialog.show();
     }
 
+    // dialog confirm cloud load
     private void loadCloudImageConfirm()
     {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity())
@@ -278,6 +283,7 @@ public class ImageFragment extends Fragment
         dialog.show();
     }
 
+    // initialise LoadFragment with populated list of available cloud images
     private void getImagesList()
     {
         try
@@ -304,6 +310,7 @@ public class ImageFragment extends Fragment
         }
     }
 
+    // commit image to firebase
     private void uploadToCloud()
     {
         final String TAG = "uploadToCloud.uploadTask";
@@ -382,6 +389,7 @@ public class ImageFragment extends Fragment
         }
     }
 
+    // dialog confirm local delete
     private void confirmDelete()
     {
         if (imageCapture.getDrawable() != null)
@@ -423,6 +431,7 @@ public class ImageFragment extends Fragment
         }
     }
 
+    // initiate textFragment
     private void sendToText(String text)
     {
         final TextFragment textFragment = new TextFragment();

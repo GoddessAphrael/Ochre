@@ -17,7 +17,7 @@ class FilePaths:
 	fnCharList = (join(dirname(__file__), "model/charList.txt"))
 	fnAccuracy = (join(dirname(__file__), "model/accuracy.txt"))
 	fnTrain = (join(dirname(__file__), "data"))
-	fnInfer = (join(dirname(__file__), "data/test.png"))
+	fnInfer = (join(dirname(__file__), "data/test2.png"))
 	fnCorpus = (join(dirname(__file__), "data/corpus.txt"))
 
 

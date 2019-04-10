@@ -20,6 +20,7 @@ public class LoginActivity extends AppCompatActivity
         mAuth = FirebaseAuth.getInstance();
     }
 
+    // initiate MainActivity if mAuth exists, else display LoginFragment
     protected void onStart()
     {
         super.onStart();

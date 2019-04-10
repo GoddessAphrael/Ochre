@@ -22,8 +22,8 @@ import com.google.firebase.auth.FirebaseAuth;
 
 public class ResetPasswordFragment extends Fragment
 {
-    private Button Cancel, ResetPassword;
-    private EditText UserEmail;
+    private Button Cancel, resetPassword;
+    private EditText userEmail;
     private FirebaseAuth mAuth;
 
     @Override
@@ -49,14 +49,14 @@ public class ResetPasswordFragment extends Fragment
         mAuth = FirebaseAuth.getInstance();
 
         Cancel = v.findViewById(R.id.CancelButton);
-        ResetPassword = v.findViewById(R.id.ResetButton);
-        UserEmail = v.findViewById(R.id.EmailRecovery);
+        resetPassword = v.findViewById(R.id.ResetButton);
+        userEmail = v.findViewById(R.id.EmailRecovery);
 
         Bundle arguments = getArguments();
         if (arguments != null)
         {
             String email  = arguments.getString("email");
-            UserEmail.setText(email);
+            userEmail.setText(email);
         }
 
         Cancel.setOnClickListener(new View.OnClickListener()
@@ -68,12 +68,13 @@ public class ResetPasswordFragment extends Fragment
             }
         });
 
-        ResetPassword.setOnClickListener(new View.OnClickListener()
+        // reset password
+        resetPassword.setOnClickListener(new View.OnClickListener()
         {
             @Override
             public void onClick(View v)
             {
-                String email = UserEmail.getText().toString();
+                String email = userEmail.getText().toString();
                 String TAG = "ResetPasswordFragment.ResetPassword";
 
                 if (TextUtils.isEmpty(email))
@@ -83,7 +84,7 @@ public class ResetPasswordFragment extends Fragment
                 }
                 else
                 {
-                    mAuth.sendPasswordResetEmail(UserEmail.getText().toString())
+                    mAuth.sendPasswordResetEmail(userEmail.getText().toString())
                             .addOnCompleteListener(new OnCompleteListener<Void>()
                             {
                                 String TAG = "ResetPasswordFragment.ResetPassword";

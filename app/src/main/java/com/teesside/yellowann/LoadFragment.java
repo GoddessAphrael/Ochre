@@ -59,6 +59,7 @@ public class LoadFragment extends Fragment
 
         cloudList.setAdapter(arrayAdapter);
 
+        // download selected image
         cloudList.setOnItemClickListener(new AdapterView.OnItemClickListener()
         {
             @Override
@@ -79,6 +80,7 @@ public class LoadFragment extends Fragment
         });
     }
 
+    // initiate imageFragment when image download complete
     private BroadcastReceiver onDownloadComplete = new BroadcastReceiver()
     {
         @Override
